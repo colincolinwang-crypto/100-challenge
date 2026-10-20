@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Wang's Life Questbook | 100 Challenge</title>
+  <meta name="description" content="不為除錯，只為體驗。紀錄下半場生命的每一個精彩瞬間。100 Challenge 單頁挑戰應用程式。">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Canvas Confetti for unlock celebrations -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Google Fonts: Inter & JetBrains Mono & Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#09090B',
+              surface: '#0F172A',
+              card: '#1E293B',
+              cardHover: '#283548',
+              border: '#334155',
+            },
+            gold: {
+              400: '#FBBF24',
+              500: '#F59E0B',
+              600: '#D97706',
+            },
+            emerald: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          },
+          fontFamily: {
+            sans: ['"Inter"', '"Noto Sans TC"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+          },
+          boxShadow: {
+            'glow-gold': '0 0 20px -3px rgba(245, 158, 11, 0.45)',
+            'glow-emerald': '0 0 20px -3px rgba(16, 185, 129, 0.45)',
+            'glow-card': '0 0 15px -2px rgba(245, 158, 11, 0.3)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom scrollbar for dark mode */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #09090B;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+
+    /* Subtle grid background pattern */
+    .bg-grid-pattern {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+
+    /* Glowing pulse animation on newly unlocked card */
+    @keyframes pulse-unlock {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.9);
+      }
+      50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 35px 8px rgba(245, 158, 11, 0.7);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 15px -2px rgba(245, 158, 11, 0.3);
+      }
+    }
+    .animate-unlock {
+      animation: pulse-unlock 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Modal blur and entrance */
+    .modal-enter {
+      animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.96) translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    /* Hide scrollbars in horizontal tab list on mobile */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Mobile safe area padding */
+    .pb-safe {
+      padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+    }
+  </style>
+</head>
+<body class="bg-[#09090B] text-slate-100 font-sans min-h-screen bg-grid-pattern antialiased selection:bg-gold-500/30 selection:text-gold-400">
+
+  <!-- Main Container -->
+  <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-10 pb-28">
+
+    <!-- HEADER SECTION -->
+    <header class="mb-8">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 pb-6 border-b border-slate-800/80">
+        <!-- Title & Subtitle -->
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-gold-500/20 to-emerald-500/20 border border-gold-500/30 text-xl shadow-glow-gold">
+              🎯
+            </span>
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 via-slate-200 to-slate-400 bg-clip-text text-transparent">
+              Wang's Life Questbook
+            </h1>
+            <span class="hidden sm:inline-block px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/30">
+              100 Challenge
+            </span>
+          </div>
+          <p class="text-sm sm:text-base text-slate-400 font-normal flex items-center gap-1.5">
+            <span class="text-gold-400/80">「</span>不為除錯，只為體驗。紀錄下半場生命的每一個精彩瞬間。<span class="text-gold-400/80">」</span>
+          </p>
+        </div>
+
+        <!-- Global Progress & Action Controls -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <!-- Total Progress Capsule -->
+          <div class="bg-brand-surface/90 border border-slate-800 rounded-2xl p-3.5 sm:px-5 flex items-center justify-between sm:justify-start gap-4 shadow-lg backdrop-blur">
+            <div>
+              <div class="text-[11px] uppercase tracking-wider text-slate-400 font-medium">總解鎖進度 Total Unlocked</div>
+              <div class="flex items-baseline gap-2 mt-0.5">
+                <span id="global-unlocked-count" class="font-mono text-2xl font-bold text-gold-400">0</span>
+                <span class="text-slate-500 font-mono text-sm">/ 600</span>
+                <span id="global-unlocked-percent" class="text-xs font-semibold text-emerald-400 ml-1">(0.0%)</span>
+              </div>
+            </div>
+            <!-- Circular / Radial Mini Indicator or Icon -->
+            <div class="w-12 h-12 rounded-xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-center text-gold-400">
+              <i data-lucide="trophy" class="w-6 h-6"></i>
+            </div>
+          </div>
+
+          <!-- Backup / Settings Menu Buttons -->
+          <div class="flex items-center gap-2">
+            <button id="btn-export-json" onclick="exportData()" title="匯出資料備份 (JSON)" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/80 text-xs font-medium text-slate-300 transition hover:text-white">
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">匯出備份</span>
+            </button>
+            <label for="import-json-input" title="匯入資料備份 (JSON)" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/80 text-xs font-medium text-slate-300 transition hover:text-white cursor-pointer">
+              <i data-lucide="upload" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">匯入備份</span>
+              <input type="file" id="import-json-input" accept=".json" class="hidden" onchange="importData(event)">
+            </label>
+            <button id="btn-sample-data" onclick="loadSampleData()" title="載入精選示範資料" class="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/80 text-xs font-medium text-gold-400 hover:text-gold-300 transition">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+            </button>
+            <button id="btn-reset-data" onclick="resetAllData()" title="清空所有資料" class="p-3 rounded-xl bg-slate-800/80 hover:bg-red-950/50 border border-slate-700/80 text-xs font-medium text-slate-400 hover:text-red-400 transition">
+              <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Global Linear Progress Bar -->
+      <div class="w-full bg-slate-900 h-2 rounded-full mt-4 overflow-hidden border border-slate-800/80">
+        <div id="global-progress-bar" class="h-full bg-gradient-to-r from-gold-500 via-amber-400 to-emerald-400 transition-all duration-700 ease-out rounded-full" style="width: 0%"></div>
+      </div>
+    </header>
+
+    <!-- TAB NAVIGATION (6 Categories) -->
+    <div class="mb-6">
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 sm:pb-0" id="tabs-container">
+        <!-- Generated by JavaScript: 6 tabs -->
+      </div>
+    </div>
+
+    <!-- CATEGORY OVERVIEW & TOOLBAR -->
+    <section class="bg-brand-surface/60 border border-slate-800/90 rounded-2xl p-4 sm:p-6 mb-8 backdrop-blur-md">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <!-- Category Info -->
+        <div>
+          <div class="flex items-center gap-2.5 mb-1.5">
+            <span id="category-badge-icon" class="text-2xl">⚽</span>
+            <h2 id="category-title" class="text-xl sm:text-2xl font-bold text-white tracking-tight">父子 100 場球</h2>
+            <span id="category-progress-badge" class="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-gold-400 border border-slate-700">
+              0 / 100
+            </span>
+          </div>
+          <p id="category-desc" class="text-sm text-slate-400">
+            一起流汗、互相傳球，父子間無話不談的綠茵時光。
+          </p>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <!-- Filter Segment: All / Unlocked / Locked -->
+          <div class="inline-flex p-1 rounded-xl bg-slate-900 border border-slate-800 text-xs font-medium">
+            <button onclick="setFilter('all')" id="filter-btn-all" class="px-3 py-1.5 rounded-lg transition bg-slate-800 text-white shadow-sm">
+              全部 (100)
+            </button>
+            <button onclick="setFilter('unlocked')" id="filter-btn-unlocked" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">
+              已解鎖 <span id="filter-unlocked-count" class="font-mono text-gold-400">(0)</span>
+            </button>
+            <button onclick="setFilter('locked')" id="filter-btn-locked" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">
+              未解鎖 <span id="filter-locked-count" class="font-mono text-slate-500">(100)</span>
+            </button>
+          </div>
+
+          <!-- Search Input -->
+          <div class="relative min-w-[160px] sm:w-48">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="搜尋標題或隨筆..." 
+              class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/50 transition">
+          </div>
+        </div>
+      </div>
+
+      <!-- Specific Tag Filters (shown especially for ⛰️ 步道與遠征) -->
+      <div id="trail-tag-filters" class="hidden mt-4 pt-3 border-t border-slate-800/60 flex items-center flex-wrap gap-1.5 text-xs">
+        <span class="text-slate-400 mr-1 text-[11px] uppercase tracking-wider">熱門標籤：</span>
+        <button onclick="filterByTag('all')" class="tag-filter-btn px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-medium" data-tag="all">全部標籤</button>
+        <button onclick="filterByTag('玉山')" class="tag-filter-btn px-2.5 py-1 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200" data-tag="玉山">🏔️ 玉山</button>
+        <button onclick="filterByTag('日本爬山')" class="tag-filter-btn px-2.5 py-1 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200" data-tag="日本爬山">🇯🇵 日本爬山</button>
+        <button onclick="filterByTag('單車環島')" class="tag-filter-btn px-2.5 py-1 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200" data-tag="單車環島">🚴 單車環島</button>
+        <button onclick="filterByTag('台灣百岳')" class="tag-filter-btn px-2.5 py-1 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200" data-tag="台灣百岳">⛰️ 台灣百岳</button>
+        <button onclick="filterByTag('郊山健行')" class="tag-filter-btn px-2.5 py-1 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200" data-tag="郊山健行">🌲 郊山健行</button>
+      </div>
+
+      <!-- Category Mini Progress Bar -->
+      <div class="w-full bg-slate-900/90 h-1.5 rounded-full mt-4 overflow-hidden border border-slate-800/60">
+        <div id="category-progress-bar" class="h-full bg-gold-500 transition-all duration-500 rounded-full" style="width: 0%"></div>
+      </div>
+    </section>
+
+    <!-- 100-GRID MATRIX (主體 100 宮格陣列) -->
+    <main>
+      <div id="grid-container" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-2.5 sm:gap-3">
+        <!-- 100 Cards dynamically generated by renderGrid() -->
+      </div>
+      
+      <!-- Empty Search State -->
+      <div id="empty-search-state" class="hidden py-16 text-center">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-slate-800/80 text-slate-500 mb-3">
+          <i data-lucide="inbox" class="w-7 h-7"></i>
+        </div>
+        <h3 class="text-base font-semibold text-slate-300">沒有符合條件的卡片</h3>
+        <p class="text-xs text-slate-500 mt-1">請嘗試變更搜尋關鍵字或切換篩選標籤。</p>
+      </div>
+    </main>
+
+  </div><!-- End Main Container -->
+
+  <!-- FLOATING ACTION BUTTON (FAB) -->
+  <aside class="fixed bottom-6 right-6 z-40">
+    <button onclick="openUnlockModal()" id="fab-unlock-btn" 
+      class="group relative flex items-center gap-2 px-5 py-3.5 rounded-full bg-gradient-to-r from-gold-500 via-amber-500 to-emerald-500 text-slate-950 font-bold text-sm shadow-xl shadow-gold-500/25 hover:shadow-gold-500/40 hover:scale-105 active:scale-95 transition-all duration-200">
+      <i data-lucide="plus" class="w-5 h-5 transition-transform duration-200 group-hover:rotate-90"></i>
+      <span>解鎖新卡片</span>
+      <span class="absolute -top-1 -right-1 flex h-3 w-3">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-3 w-3 bg-gold-500"></span>
+      </span>
+    </button>
+  </aside>
+
+  <!-- MODAL: QUICK UPLOAD / UNLOCK CARD (手機隨手上傳解鎖) -->
+  <div id="unlock-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-brand-surface border border-slate-700/80 w-full max-w-lg rounded-2xl p-5 sm:p-6 shadow-2xl modal-enter relative my-auto">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div class="flex items-center gap-2.5">
+          <span class="p-2 rounded-xl bg-gold-500/10 text-gold-400 border border-gold-500/30">
+            <i data-lucide="key-round" class="w-5 h-5"></i>
+          </span>
+          <div>
+            <h3 id="modal-form-title" class="text-lg font-bold text-white">解鎖全新精彩瞬間</h3>
+            <p class="text-xs text-slate-400">填寫隨筆、上傳照片，點亮屬於你的生命宮格</p>
+          </div>
+        </div>
+        <button onclick="closeUnlockModal()" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Unlock Form -->
+      <form id="unlock-form" onsubmit="handleFormSubmit(event)" class="mt-4 space-y-4">
+        
+        <!-- Category & Number in a Row -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Category Select -->
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1.5">
+              1. 選擇分類 Quest Category
+            </label>
+            <select id="form-category" onchange="onFormCategoryChange(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500">
+              <!-- Options populated by JS -->
+            </select>
+          </div>
+
+          <!-- Card Number (Auto-next or manual) -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-xs font-medium text-slate-300">
+                2. 格子編號 Slot #
+              </label>
+              <span id="number-status-tip" class="text-[11px] text-emerald-400 font-mono">推薦下一個未解鎖</span>
+            </div>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-slate-500 text-xs font-bold">#</span>
+              <input type="number" id="form-number" min="1" max="100" required placeholder="001" oninput="onFormNumberInput(this.value)"
+                class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-7 pr-3 py-2.5 text-xs font-mono font-bold text-gold-400 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500">
+            </div>
+          </div>
+        </div>
+
+        <!-- Title / Location / Name -->
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1.5">
+            3. 名稱或地點 Title / Place
+          </label>
+          <input type="text" id="form-title" required placeholder="例如：大安森林公園夜間傳接球、合歡北峰日出..." maxlength="40"
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500">
+        </div>
+
+        <!-- Date & Quick Tags Row -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Date Picker -->
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1.5">
+              4. 解鎖日期 Date
+            </label>
+            <input type="date" id="form-date" required
+              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500">
+          </div>
+
+          <!-- Tags input / presets -->
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1.5">
+              標籤 Tags (逗號分隔)
+            </label>
+            <input type="text" id="form-tags" placeholder="例如：玉山, 遠征, 親子"
+              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500">
+          </div>
+        </div>
+
+        <!-- Quick Tag Presets for Mountain/Trail category -->
+        <div id="quick-preset-tags" class="flex flex-wrap items-center gap-1.5 pt-0.5">
+          <span class="text-[11px] text-slate-400">快速填入標籤：</span>
+          <button type="button" onclick="appendTag('玉山')" class="px-2 py-0.5 rounded text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">+ 玉山</button>
+          <button type="button" onclick="appendTag('日本爬山')" class="px-2 py-0.5 rounded text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">+ 日本爬山</button>
+          <button type="button" onclick="appendTag('單車環島')" class="px-2 py-0.5 rounded text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">+ 單車環島</button>
+          <button type="button" onclick="appendTag('台灣百岳')" class="px-2 py-0.5 rounded text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">+ 台灣百岳</button>
+        </div>
+
+        <!-- Photo Upload / Camera Area -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-medium text-slate-300">
+              5. 上傳照片或直接拍照 Photo (自動壓縮優化)
+            </label>
+            <button type="button" onclick="toggleImageUrlInput()" class="text-[11px] text-gold-400 hover:text-gold-300 underline underline-offset-2">
+              或改填圖片網址
+            </button>
+          </div>
+          
+          <div class="relative">
+            <!-- Hidden file input: capture="environment" on mobile opens camera directly or photo album -->
+            <input type="file" id="form-photo-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+            
+            <!-- Upload Box / Preview Box -->
+            <div id="photo-upload-dropzone" onclick="document.getElementById('form-photo-input').click()"
+              class="border-2 border-dashed border-slate-700 hover:border-gold-500/70 rounded-2xl p-4 text-center cursor-pointer transition bg-slate-900/60 group">
+              <div id="photo-placeholder" class="py-3 flex flex-col items-center justify-center">
+                <div class="w-12 h-12 rounded-xl bg-slate-800 group-hover:bg-gold-500/10 text-slate-400 group-hover:text-gold-400 flex items-center justify-center transition mb-2">
+                  <i data-lucide="camera" class="w-6 h-6"></i>
+                </div>
+                <p class="text-xs font-medium text-slate-300">
+                  <span class="text-gold-400">點此拍照或選擇相簿</span>
+                </p>
+                <p class="text-[11px] text-slate-500 mt-1">支援手機拍照直接上傳，系統會自動智慧壓縮以防佔據空間</p>
+              </div>
+
+              <!-- Image Preview Container (Hidden initially) -->
+              <div id="photo-preview-container" class="hidden relative">
+                <img id="photo-preview-img" src="" alt="預覽照片" class="w-full h-44 object-cover rounded-xl border border-slate-700 shadow-md">
+                <div class="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition rounded-xl flex items-center justify-center gap-2">
+                  <span class="px-3 py-1.5 rounded-lg bg-black/70 text-xs text-white backdrop-blur">點擊更換照片</span>
+                </div>
+                <button type="button" onclick="event.stopPropagation(); removePhoto();" class="absolute top-2 right-2 p-1.5 rounded-full bg-red-500/80 hover:bg-red-600 text-white shadow-lg transition">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Optional Image URL Input (collapsible) -->
+            <div id="image-url-box" class="hidden mt-2 p-3 bg-slate-900/90 border border-slate-800 rounded-xl space-y-2">
+              <label class="block text-[11px] text-slate-400 font-medium">輸入外連圖片網址 (URL)：</label>
+              <div class="flex gap-2">
+                <input type="url" id="custom-image-url-input" placeholder="https://..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-gold-500">
+                <button type="button" onclick="applyCustomImageUrl()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-gold-400 font-medium transition">套用</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3-sentence Notes / Reflection -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-medium text-slate-300">
+              6. 三句內的心得隨筆 Reflection (100字內)
+            </label>
+            <span id="char-counter" class="text-[11px] font-mono text-slate-400">0 / 100</span>
+          </div>
+          <textarea id="form-notes" rows="3" maxlength="100" required oninput="updateCharCount(this.value)"
+            placeholder="紀錄當下最真切的感受與溫度，三句內寫完..."
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 resize-none"></textarea>
+        </div>
+
+        <!-- Submit & Cancel Buttons -->
+        <div class="pt-2 flex items-center gap-3">
+          <button type="button" onclick="closeUnlockModal()" 
+            class="w-1/3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition">
+            取消
+          </button>
+          <button type="submit" id="btn-submit-unlock"
+            class="w-2/3 py-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-400 hover:to-amber-400 text-slate-950 text-xs font-bold transition shadow-lg shadow-gold-500/20 flex items-center justify-center gap-1.5">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span id="submit-btn-text">確定解鎖！</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CARD DETAIL & MEMORY VIEW (點擊格子查看詳情) -->
+  <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-brand-surface border border-slate-700/80 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl modal-enter relative my-auto">
+      
+      <!-- Card Image Header -->
+      <div class="relative w-full h-56 sm:h-64 bg-slate-900 overflow-hidden">
+        <img id="detail-photo" src="" alt="照片" class="w-full h-full object-cover">
+        
+        <!-- Top Gradient Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-brand-surface via-transparent to-black/60 pointer-events-none"></div>
+        
+        <!-- Slot Number Badge -->
+        <div class="absolute top-4 left-4 flex items-center gap-2">
+          <span id="detail-slot-num" class="font-mono text-xs font-bold px-3 py-1 rounded-full bg-black/70 text-gold-400 border border-gold-500/50 backdrop-blur shadow-lg">
+            #001
+          </span>
+          <span id="detail-category-badge" class="text-xs px-2.5 py-1 rounded-full bg-slate-900/80 text-slate-200 border border-slate-700 backdrop-blur">
+            ⚽ 父子 100 場球
+          </span>
+        </div>
+
+        <!-- Close Button -->
+        <button onclick="closeDetailModal()" class="absolute top-4 right-4 p-2 rounded-full bg-black/60 hover:bg-black/90 text-slate-300 hover:text-white backdrop-blur transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Unlock Date Floating Badge -->
+        <div class="absolute bottom-3 right-4 flex items-center gap-1.5 text-xs text-slate-300 font-mono bg-black/60 backdrop-blur px-2.5 py-1 rounded-lg border border-slate-700/60">
+          <i data-lucide="calendar" class="w-3.5 h-3.5 text-gold-400"></i>
+          <span id="detail-date">2026-10-19</span>
+        </div>
+      </div>
+
+      <!-- Card Body Content -->
+      <div class="p-5 sm:p-6 space-y-4">
+        <!-- Title -->
+        <div>
+          <h3 id="detail-title" class="text-xl sm:text-2xl font-bold text-white tracking-tight">
+            卡片標題
+          </h3>
+          <!-- Tags Container -->
+          <div id="detail-tags-container" class="flex flex-wrap gap-1.5 mt-2">
+            <!-- Tags inserted by JS -->
+          </div>
+        </div>
+
+        <!-- Notes Quote -->
+        <div class="p-4 rounded-xl bg-slate-900/90 border-l-4 border-gold-500 text-slate-200 text-sm leading-relaxed relative">
+          <span class="text-gold-500/50 text-2xl font-serif absolute -top-1 left-2">“</span>
+          <p id="detail-notes" class="pl-4 italic">
+            心得隨筆內容...
+          </p>
+        </div>
+
+        <!-- Action Buttons: Edit / Delete -->
+        <div class="pt-3 flex items-center justify-between border-t border-slate-800">
+          <div class="flex items-center gap-2">
+            <button onclick="editCurrentCard()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 transition">
+              <i data-lucide="pencil" class="w-3.5 h-3.5 text-slate-400"></i>
+              <span>編輯</span>
+            </button>
+            <button onclick="deleteCurrentCard()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-xs font-medium text-red-400 border border-red-500/30 transition">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              <span>重設卡片</span>
+            </button>
+          </div>
+          <button onclick="closeDetailModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition">
+            關閉
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- APPLICATION JAVASCRIPT LOGIC -->
+  <script>
+    // ==========================================
+    // 1. DATA MODELS & CATEGORIES CONFIGURATION
+    // ==========================================
+    const CATEGORIES = [
+      {
+        id: 'soccer',
+        icon: '⚽',
+        title: '父子 100 場球',
+        shortTitle: '父子球賽',
+        desc: '一起流汗、互相傳球，父子間無話不談的綠茵與籃球時光。',
+        color: 'emerald',
+        defaultTags: ['足球', '籃球', '傳接球', '夜戰']
+      },
+      {
+        id: 'meals',
+        icon: '🍱',
+        title: '跟爸爸吃 100 次飯',
+        shortTitle: '跟爸爸吃飯',
+        desc: '一碗熱湯、幾句日常，最平凡卻也最珍貴的圍爐對話。',
+        color: 'gold',
+        defaultTags: ['家常菜', '巷弄老店', '早餐約會', '父親私房']
+      },
+      {
+        id: 'dishes',
+        icon: '🍻',
+        title: '100 道下酒菜',
+        shortTitle: '百道下酒菜',
+        desc: '週末夜晚的小酌微醺，親手烹調的極致下酒風味。',
+        color: 'gold',
+        defaultTags: ['下酒小點', '炙燒', '居酒屋', '慢燉', '秘製']
+      },
+      {
+        id: 'ai',
+        icon: '💻',
+        title: '100 個 AI 應用',
+        shortTitle: 'AI 應用專案',
+        desc: '探索新科技浪潮，用 AI 動手打造有溫度與解決生活問題的酷專案。',
+        color: 'emerald',
+        defaultTags: ['Agent', '自動化', '視覺生成', '工作流', '實驗室']
+      },
+      {
+        id: 'sketches',
+        icon: '🎨',
+        title: '100 幅速寫',
+        shortTitle: '百幅速寫',
+        desc: '隨手拾起畫筆，紀錄眼前光影、街景與那一刻的心境感受。',
+        color: 'gold',
+        defaultTags: ['街頭速寫', '咖啡館', '鋼筆淡彩', '旅行隨筆']
+      },
+      {
+        id: 'trails',
+        icon: '⛰️',
+        title: '100 條步道與遠征',
+        shortTitle: '步道與遠征',
+        desc: '丈量大地的腳步，走向山巔與大海的壯闊冒險（含玉山/日本爬山/單車環島）。',
+        color: 'emerald',
+        defaultTags: ['玉山', '日本爬山', '單車環島', '台灣百岳', '郊山健行', '遠征探索']
+      }
+    ];
+
+    const STORAGE_KEY = 'wang_life_questbook_data_v1';
+
+    // Application State
+    let questData = {};
+    let currentCategoryId = 'soccer';
+    let currentFilter = 'all'; // 'all' | 'unlocked' | 'locked'
+    let currentTagFilter = 'all';
+    let currentSearchTerm = '';
+    let currentDetailCard = null; // { categoryId, number }
+    let uploadedImageBase64 = null;
+
+    // ==========================================
+    // 2. INITIALIZATION & STORAGE
+    // ==========================================
+    function safeCreateIcons() {
+      if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
+        lucide.createIcons();
+      }
+    }
+
+    function initApp() {
+      loadDataFromStorage();
+      renderTabs();
+      updateCategoryHeader();
+      renderGrid();
+      updateGlobalCounters();
+      setupFormDefaults();
+      safeCreateIcons();
+    }
+
+    function loadDataFromStorage() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          questData = JSON.parse(stored);
+        } catch (e) {
+          console.error("無法解析儲存的資料，初始化空資料庫", e);
+          questData = {};
+        }
+      } else {
+        questData = {};
+      }
+
+      // Ensure each category object exists
+      CATEGORIES.forEach(cat => {
+        if (!questData[cat.id]) {
+          questData[cat.id] = {};
+        }
+      });
+    }
+
+    function saveDataToStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(questData));
+      } catch (e) {
+        console.error("儲存失敗，可能超出 localStorage 容量", e);
+        showToast("⚠️ 儲存空間已滿，建議匯出備份以釋放空間！", "warning");
+      }
+    }
+
+    // ==========================================
+    // 3. UI RENDERING: TABS & CATEGORY HEADER
+    // ==========================================
+    function renderTabs() {
+      const container = document.getElementById('tabs-container');
+      container.innerHTML = '';
+
+      CATEGORIES.forEach(cat => {
+        const unlockedCount = Object.keys(questData[cat.id] || {}).length;
+        const isActive = cat.id === currentCategoryId;
+
+        const btn = document.createElement('button');
+        btn.onclick = () => switchCategory(cat.id);
+        btn.className = `flex items-center gap-2 px-3.5 py-2.5 rounded-xl font-medium text-xs whitespace-nowrap transition-all duration-200 border ${
+          isActive 
+            ? 'bg-slate-800 text-white border-gold-500/60 shadow-lg shadow-gold-500/10' 
+            : 'bg-brand-surface/80 text-slate-400 hover:text-slate-200 border-slate-800/80 hover:bg-slate-800/50'
+        }`;
+
+        btn.innerHTML = `
+          <span class="text-base">${cat.icon}</span>
+          <span>${cat.title}</span>
+          <span class="font-mono text-[10px] px-2 py-0.5 rounded-full ${
+            unlockedCount > 0 
+              ? 'bg-gold-500/15 text-gold-400 border border-gold-500/30' 
+              : 'bg-slate-900 text-slate-500 border border-slate-800'
+          }">
+            ${unlockedCount}
+          </span>
+        `;
+        container.appendChild(btn);
+      });
+    }
+
+    function switchCategory(catId) {
+      currentCategoryId = catId;
+      currentFilter = 'all';
+      currentTagFilter = 'all';
+      currentSearchTerm = '';
+      document.getElementById('search-input').value = '';
+      
+      resetFilterButtonsUI();
+      renderTabs();
+      updateCategoryHeader();
+      renderGrid();
+    }
+
+    function updateCategoryHeader() {
+      const currentCat = CATEGORIES.find(c => c.id === currentCategoryId) || CATEGORIES[0];
+      const unlockedCount = Object.keys(questData[currentCategoryId] || {}).length;
+      const percent = ((unlockedCount / 100) * 100).toFixed(0);
+
+      document.getElementById('category-badge-icon').textContent = currentCat.icon;
+      document.getElementById('category-title').textContent = currentCat.title;
+      document.getElementById('category-desc').textContent = currentCat.desc;
+      document.getElementById('category-progress-badge').textContent = `${unlockedCount} / 100 (${percent}%)`;
+      
+      // Update progress bar
+      const bar = document.getElementById('category-progress-bar');
+      bar.style.width = `${percent}%`;
+
+      // Update counters in filter bar
+      document.getElementById('filter-unlocked-count').textContent = `(${unlockedCount})`;
+      document.getElementById('filter-locked-count').textContent = `(${100 - unlockedCount})`;
+
+      // Show tag filters bar if in trails category
+      const trailTagBar = document.getElementById('trail-tag-filters');
+      if (currentCategoryId === 'trails') {
+        trailTagBar.classList.remove('hidden');
+      } else {
+        trailTagBar.classList.add('hidden');
+      }
+    }
+
+    function updateGlobalCounters() {
+      let total = 0;
+      CATEGORIES.forEach(cat => {
+        total += Object.keys(questData[cat.id] || {}).length;
+      });
+
+      const percent = ((total / 600) * 100).toFixed(1);
+      document.getElementById('global-unlocked-count').textContent = total;
+      document.getElementById('global-unlocked-percent').textContent = `(${percent}%)`;
+      document.getElementById('global-progress-bar').style.width = `${percent}%`;
+    }
+
+    // ==========================================
+    // 4. 100-GRID MATRIX GENERATION & FILTERING
+    // ==========================================
+    function renderGrid(highlightNumber = null) {
+      const container = document.getElementById('grid-container');
+      const emptyState = document.getElementById('empty-search-state');
+      container.innerHTML = '';
+
+      const categoryItems = questData[currentCategoryId] || {};
+      let visibleCount = 0;
+
+      for (let i = 1; i <= 100; i++) {
+        const item = categoryItems[i];
+        const isUnlocked = !!item;
+        const numStr = String(i).padStart(3, '0');
+
+        // Apply Status Filter
+        if (currentFilter === 'unlocked' && !isUnlocked) continue;
+        if (currentFilter === 'locked' && isUnlocked) continue;
+
+        // Apply Tag Filter
+        if (currentTagFilter !== 'all') {
+          if (!isUnlocked || !item.tags || !item.tags.includes(currentTagFilter)) {
+            continue;
+          }
+        }
+
+        // Apply Search Filter
+        if (currentSearchTerm.trim() !== '') {
+          if (!isUnlocked) continue;
+          const searchLower = currentSearchTerm.toLowerCase();
+          const matchTitle = (item.title || '').toLowerCase().includes(searchLower);
+          const matchNotes = (item.notes || '').toLowerCase().includes(searchLower);
+          const matchTags = (item.tags || []).some(t => t.toLowerCase().includes(searchLower));
+          if (!matchTitle && !matchNotes && !matchTags) continue;
+        }
+
+        visibleCount++;
+
+        // Create Card Element
+        const card = document.createElement('div');
+        const isTargetHighlight = (highlightNumber !== null && highlightNumber === i);
+
+        if (isUnlocked) {
+          // --- UNLOCKED STATE ---
+          card.className = `group relative aspect-square rounded-2xl overflow-hidden cursor-pointer bg-slate-900 border border-gold-500/40 hover:border-gold-400 transition-all duration-300 shadow-md hover:shadow-glow-card ${
+            isTargetHighlight ? 'animate-unlock z-10' : ''
+          }`;
+          card.onclick = () => openDetailModal(currentCategoryId, i);
+
+          const photoSrc = item.photo || '';
+
+          card.innerHTML = `
+            ${photoSrc 
+              ? `<img src="${photoSrc}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">`
+              : `<div class="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center text-gold-400"><i data-lucide="award" class="w-7 h-7"></i></div>`
+            }
+            
+            <!-- Dark Gradient overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/40 group-hover:via-black/20 transition-all"></div>
+
+            <!-- Top Slot Number Badge -->
+            <div class="absolute top-2 left-2 flex items-center gap-1">
+              <span class="font-mono text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-md bg-black/70 text-gold-400 border border-gold-500/50 backdrop-blur">
+                #${numStr}
+              </span>
+            </div>
+
+            <!-- Sparkle Icon in Unlocked Card -->
+            <div class="absolute top-2 right-2 text-gold-400 opacity-80 group-hover:opacity-100 transition">
+              <i data-lucide="sparkle" class="w-3.5 h-3.5"></i>
+            </div>
+
+            <!-- Bottom Title & Date (Responsive) -->
+            <div class="absolute bottom-2 left-2 right-2 truncate">
+              <p class="text-xs sm:text-[13px] font-bold text-white truncate drop-shadow-sm group-hover:text-gold-300 transition">
+                ${item.title || '無標題'}
+              </p>
+              <p class="text-[10px] font-mono text-slate-400 truncate">
+                ${item.date ? item.date.slice(5) : ''}
+              </p>
+            </div>
+          `;
+        } else {
+          // --- EMPTY / LOCKED STATE ---
+          card.className = `group relative aspect-square rounded-2xl flex flex-col items-center justify-center p-2 border border-dashed border-slate-800/90 hover:border-slate-600 bg-slate-900/40 hover:bg-slate-800/40 transition-all duration-200 cursor-pointer ${
+            isTargetHighlight ? 'animate-unlock z-10' : ''
+          }`;
+          // Quick shortcut: clicking an empty card directly opens unlock modal for this number!
+          card.onclick = () => openUnlockModal(currentCategoryId, i);
+
+          card.innerHTML = `
+            <span class="font-mono text-xs sm:text-sm font-semibold text-slate-600 group-hover:text-gold-400/80 transition-colors">
+              #${numStr}
+            </span>
+            <div class="mt-1 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-[10px] text-slate-400">
+              <i data-lucide="plus" class="w-3 h-3 text-gold-400"></i>
+              <span class="hidden sm:inline">解鎖</span>
+            </div>
+          `;
+        }
+
+        container.appendChild(card);
+      }
+
+      if (visibleCount === 0) {
+        emptyState.classList.remove('hidden');
+      } else {
+        emptyState.classList.add('hidden');
+      }
+
+      safeCreateIcons();
+    }
+
+    // ==========================================
+    // 5. FILTERING & SEARCHING LOGIC
+    // ==========================================
+    function setFilter(filterType) {
+      currentFilter = filterType;
+      resetFilterButtonsUI();
+      renderGrid();
+    }
+
+    function resetFilterButtonsUI() {
+      ['all', 'unlocked', 'locked'].forEach(type => {
+        const btn = document.getElementById(`filter-btn-${type}`);
+        if (btn) {
+          if (type === currentFilter) {
+            btn.className = "px-3 py-1.5 rounded-lg transition bg-slate-800 text-white shadow-sm font-semibold";
+          } else {
+            btn.className = "px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition";
+          }
+        }
+      });
+    }
+
+    function filterByTag(tag) {
+      currentTagFilter = tag;
+      document.querySelectorAll('.tag-filter-btn').forEach(btn => {
+        const btnTag = btn.getAttribute('data-tag');
+        if (btnTag === tag) {
+          btn.className = "tag-filter-btn px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-medium";
+        } else {
+          btn.className = "tag-filter-btn px-2.5 py-1 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200";
+        }
+      });
+      renderGrid();
+    }
+
+    function handleSearch(val) {
+      currentSearchTerm = val;
+      renderGrid();
+    }
+
+    // ==========================================
+    // 6. QUICK UPLOAD / UNLOCK MODAL
+    // ==========================================
+    function setupFormDefaults() {
+      // Populate category dropdown
+      const sel = document.getElementById('form-category');
+      sel.innerHTML = '';
+      CATEGORIES.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = `${c.icon} ${c.title}`;
+        sel.appendChild(opt);
+      });
+
+      // Default date to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('form-date').value = today;
+    }
+
+    function openUnlockModal(presetCatId = null, presetNumber = null) {
+      const modal = document.getElementById('unlock-modal');
+      const categoryToUse = presetCatId || currentCategoryId;
+      
+      document.getElementById('form-category').value = categoryToUse;
+      onFormCategoryChange(categoryToUse, presetNumber);
+
+      // Reset fields
+      document.getElementById('modal-form-title').textContent = '解鎖全新精彩瞬間';
+      document.getElementById('submit-btn-text').textContent = '確定解鎖！';
+      document.getElementById('form-title').value = '';
+      document.getElementById('form-notes').value = '';
+      document.getElementById('form-tags').value = '';
+      document.getElementById('char-counter').textContent = '0 / 100';
+      
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('form-date').value = today;
+
+      removePhoto();
+
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      safeCreateIcons();
+    }
+
+    function closeUnlockModal() {
+      const modal = document.getElementById('unlock-modal');
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+      uploadedImageBase64 = null;
+    }
+
+    function onFormCategoryChange(catId, presetNum = null) {
+      const numInput = document.getElementById('form-number');
+      const tip = document.getElementById('number-status-tip');
+      const presetTagsContainer = document.getElementById('quick-preset-tags');
+
+      // If category is trails, show trail tags helper
+      if (catId === 'trails') {
+        presetTagsContainer.classList.remove('hidden');
+      } else {
+        presetTagsContainer.classList.add('hidden');
+      }
+
+      if (presetNum) {
+        numInput.value = presetNum;
+        onFormNumberInput(presetNum);
+        return;
+      }
+
+      // Auto-calculate the next available locked number
+      const catData = questData[catId] || {};
+      let nextAvailable = 1;
+      for (let i = 1; i <= 100; i++) {
+        if (!catData[i]) {
+          nextAvailable = i;
+          break;
+        }
+      }
+      numInput.value = nextAvailable;
+      onFormNumberInput(nextAvailable);
+    }
+
+    function onFormNumberInput(val) {
+      const num = parseInt(val, 10);
+      const catId = document.getElementById('form-category').value;
+      const tip = document.getElementById('number-status-tip');
+      
+      if (isNaN(num) || num < 1 || num > 100) {
+        tip.textContent = '❌ 請輸入 1-100';
+        tip.className = 'text-[11px] text-red-400 font-mono';
+        return;
+      }
+
+      const isUnlocked = !!(questData[catId] && questData[catId][num]);
+      if (isUnlocked) {
+        tip.textContent = `⚠️ #${String(num).padStart(3, '0')} 已解鎖（送出將更新）`;
+        tip.className = 'text-[11px] text-amber-400 font-mono';
+      } else {
+        tip.textContent = `✨ #${String(num).padStart(3, '0')} 未解鎖（全新點亮）`;
+        tip.className = 'text-[11px] text-emerald-400 font-mono';
+      }
+    }
+
+    function toggleImageUrlInput() {
+      const box = document.getElementById('image-url-box');
+      box.classList.toggle('hidden');
+    }
+
+    function applyCustomImageUrl() {
+      const input = document.getElementById('custom-image-url-input');
+      const url = input.value.trim();
+      if (!url) return;
+      uploadedImageBase64 = url;
+      const previewImg = document.getElementById('photo-preview-img');
+      previewImg.src = url;
+      document.getElementById('photo-placeholder').classList.add('hidden');
+      document.getElementById('photo-preview-container').classList.remove('hidden');
+      safeCreateIcons();
+      showToast("圖片網址已成功套用！", "info");
+    }
+
+    function appendTag(tagName) {
+      const tagsInput = document.getElementById('form-tags');
+      const current = tagsInput.value.trim();
+      const tagList = current ? current.split(',').map(s => s.trim()) : [];
+      if (!tagList.includes(tagName)) {
+        tagList.push(tagName);
+      }
+      tagsInput.value = tagList.join(', ');
+    }
+
+    function updateCharCount(text) {
+      document.getElementById('char-counter').textContent = `${text.length} / 100`;
+    }
+
+    // ==========================================
+    // 7. CLIENT-SIDE SMART IMAGE COMPRESSION
+    // ==========================================
+    function handlePhotoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Smart compression via HTML5 Canvas
+      compressImage(file, 900, 900, 0.75).then(base64Data => {
+        uploadedImageBase64 = base64Data;
+        
+        // Show in preview
+        const previewImg = document.getElementById('photo-preview-img');
+        previewImg.src = base64Data;
+        document.getElementById('photo-placeholder').classList.add('hidden');
+        document.getElementById('photo-preview-container').classList.remove('hidden');
+        safeCreateIcons();
+      }).catch(err => {
+        console.error("圖片壓縮失敗", err);
+        showToast("圖片載入失敗，請換一張照片重試！", "error");
+      });
+    }
+
+    function compressImage(file, maxWidth, maxHeight, quality) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = () => {
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > maxWidth) {
+                height = Math.round((height * maxWidth) / width);
+                width = maxWidth;
+              }
+            } else {
+              if (height > maxHeight) {
+                width = Math.round((width * maxHeight) / height);
+                height = maxHeight;
+              }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            const dataUrl = canvas.toDataURL('image/jpeg', quality);
+            resolve(dataUrl);
+          };
+          img.onerror = reject;
+        };
+        reader.onerror = reject;
+      });
+    }
+
+    function removePhoto() {
+      uploadedImageBase64 = null;
+      document.getElementById('form-photo-input').value = '';
+      document.getElementById('photo-preview-img').src = '';
+      document.getElementById('photo-placeholder').classList.remove('hidden');
+      document.getElementById('photo-preview-container').classList.add('hidden');
+    }
+
+    // ==========================================
+    // 8. FORM SUBMIT & UNLOCK CELEBRATION
+    // ==========================================
+    function handleFormSubmit(event) {
+      event.preventDefault();
+
+      const categoryId = document.getElementById('form-category').value;
+      const number = parseInt(document.getElementById('form-number').value, 10);
+      const title = document.getElementById('form-title').value.trim();
+      const date = document.getElementById('form-date').value;
+      const rawTags = document.getElementById('form-tags').value.trim();
+      const notes = document.getElementById('form-notes').value.trim();
+
+      if (isNaN(number) || number < 1 || number > 100) {
+        showToast("編號必須在 1 到 100 之間！", "warning");
+        return;
+      }
+
+      const tags = rawTags ? rawTags.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+      if (!questData[categoryId]) {
+        questData[categoryId] = {};
+      }
+
+      // Check if updating or creating
+      const isNew = !questData[categoryId][number];
+
+      // Save record
+      questData[categoryId][number] = {
+        title,
+        date,
+        tags,
+        notes,
+        photo: uploadedImageBase64 || (questData[categoryId][number] ? questData[categoryId][number].photo : '') || '',
+        updatedAt: new Date().toISOString()
+      };
+
+      saveDataToStorage();
+
+      // Close modal
+      closeUnlockModal();
+
+      // Switch to this category if different
+      if (currentCategoryId !== categoryId) {
+        currentCategoryId = categoryId;
+      }
+
+      renderTabs();
+      updateCategoryHeader();
+      updateGlobalCounters();
+      renderGrid(number);
+
+      // Trigger Confetti Celebration!
+      triggerConfetti();
+
+      showToast(`🎉 成功解鎖 #${String(number).padStart(3, '0')} ${title}！`, "success");
+
+      // Scroll smoothly to the newly unlocked card
+      setTimeout(() => {
+        const cards = document.querySelectorAll('#grid-container > div');
+        if (cards && cards[number - 1]) {
+          cards[number - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 200);
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.7 },
+          colors: ['#F59E0B', '#10B981', '#FBBF24', '#34D399', '#ffffff']
+        });
+      }
+    }
+
+    // ==========================================
+    // 9. CARD DETAIL MODAL
+    // ==========================================
+    function openDetailModal(categoryId, number) {
+      const item = questData[categoryId] && questData[categoryId][number];
+      if (!item) return;
+
+      currentDetailCard = { categoryId, number };
+      const cat = CATEGORIES.find(c => c.id === categoryId);
+
+      const numStr = String(number).padStart(3, '0');
+      document.getElementById('detail-slot-num').textContent = `#${numStr}`;
+      document.getElementById('detail-category-badge').textContent = `${cat ? cat.icon : ''} ${cat ? cat.title : ''}`;
+      document.getElementById('detail-title').textContent = item.title || '無標題';
+      document.getElementById('detail-date').textContent = item.date || '未記錄日期';
+      document.getElementById('detail-notes').textContent = item.notes || '尚無隨筆記錄。';
+
+      const photoEl = document.getElementById('detail-photo');
+      if (item.photo) {
+        photoEl.src = item.photo;
+        photoEl.classList.remove('hidden');
+      } else {
+        photoEl.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400"><rect width="600" height="400" fill="%231E293B"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23F59E0B" font-family="sans-serif" font-size="20">Wang\'s Questbook Unlocked</text></svg>';
+      }
+
+      // Render tags
+      const tagsContainer = document.getElementById('detail-tags-container');
+      tagsContainer.innerHTML = '';
+      if (item.tags && item.tags.length > 0) {
+        item.tags.forEach(t => {
+          const span = document.createElement('span');
+          span.className = "text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-slate-800 text-gold-400 border border-slate-700";
+          span.textContent = `#${t}`;
+          tagsContainer.appendChild(span);
+        });
+      }
+
+      const modal = document.getElementById('detail-modal');
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      safeCreateIcons();
+    }
+
+    function closeDetailModal() {
+      const modal = document.getElementById('detail-modal');
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+      currentDetailCard = null;
+    }
+
+    function editCurrentCard() {
+      if (!currentDetailCard) return;
+      const { categoryId, number } = currentDetailCard;
+      const item = questData[categoryId][number];
+      if (!item) return;
+
+      closeDetailModal();
+
+      // Open upload modal with prefilled data
+      openUnlockModal(categoryId, number);
+
+      document.getElementById('modal-form-title').textContent = `編輯卡片 #${String(number).padStart(3, '0')}`;
+      document.getElementById('submit-btn-text').textContent = '儲存變更';
+      document.getElementById('form-title').value = item.title || '';
+      document.getElementById('form-date').value = item.date || '';
+      document.getElementById('form-tags').value = (item.tags || []).join(', ');
+      document.getElementById('form-notes').value = item.notes || '';
+      updateCharCount(item.notes || '');
+
+      if (item.photo) {
+        uploadedImageBase64 = item.photo;
+        document.getElementById('photo-preview-img').src = item.photo;
+        document.getElementById('photo-placeholder').classList.add('hidden');
+        document.getElementById('photo-preview-container').classList.remove('hidden');
+      }
+    }
+
+    function deleteCurrentCard() {
+      if (!currentDetailCard) return;
+      const { categoryId, number } = currentDetailCard;
+
+      if (!confirm(`確定要清除 #${String(number).padStart(3, '0')} 的解鎖紀錄嗎？此動作將恢復為未解鎖狀態。`)) {
+        return;
+      }
+
+      delete questData[categoryId][number];
+      saveDataToStorage();
+      closeDetailModal();
+
+      renderTabs();
+      updateCategoryHeader();
+      updateGlobalCounters();
+      renderGrid();
+
+      showToast(`已重設卡片 #${String(number).padStart(3, '0')}`, "info");
+    }
+
+    // ==========================================
+    // 10. EXPORT & IMPORT BACKUP (JSON)
+    // ==========================================
+    function exportData() {
+      const exportObject = {
+        app: "Wang's Life Questbook",
+        version: "1.0",
+        exportDate: new Date().toISOString(),
+        totalUnlocked: Object.values(questData).reduce((sum, cat) => sum + Object.keys(cat).length, 0),
+        quests: questData
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObject, null, 2));
+      const downloadAnchor = document.createElement('a');
+      const dateStr = new Date().toISOString().split('T')[0];
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `wang_life_questbook_backup_${dateStr}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+
+      showToast("💾 備份檔案匯出成功！請妥善保存你的生命回憶。", "success");
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported.quests) {
+            if (confirm("即將匯入備份檔案，這將會合併現有資料。確定繼續嗎？")) {
+              // Merge categories
+              CATEGORIES.forEach(cat => {
+                if (imported.quests[cat.id]) {
+                  questData[cat.id] = { ...questData[cat.id], ...imported.quests[cat.id] };
+                }
+              });
+              saveDataToStorage();
+              renderTabs();
+              updateCategoryHeader();
+              updateGlobalCounters();
+              renderGrid();
+              showToast("🎉 備份資料匯入並合併成功！", "success");
+            }
+          } else {
+            showToast("檔案格式不正確，找不到 quests 資料欄位！", "error");
+          }
+        } catch (err) {
+          console.error("匯入錯誤", err);
+          showToast("無法解析 JSON 檔案，請確認檔案格式是否正確。", "error");
+        }
+        event.target.value = '';
+      };
+      reader.readAsText(file);
+    }
+
+    // ==========================================
+    // 11. SAMPLE DATA (6 Inspiring Starter Cards)
+    // ==========================================
+    function loadSampleData() {
+      if (confirm("是否載入 6 條精選的示範人生清單卡片？這能讓你立刻體驗完整介面與視覺效果。")) {
+        questData = {
+          soccer: {
+            1: {
+              title: "大安森林公園父子夜戰",
+              date: "2026-04-12",
+              tags: ["足球", "傳接球", "夜戰"],
+              notes: "帶兒子在草地上練了一整晚傳接球與內腳背射門。滿身大汗時並肩喝著冰紅茶，看著他燦爛的笑容，所有的疲憊都煙消雲散。",
+              photo: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80"
+            }
+          },
+          meals: {
+            1: {
+              title: "老胡牛肉麵的老位子",
+              date: "2026-05-01",
+              tags: ["家常菜", "巷弄老店", "父親私房"],
+              notes: "三十年前爸爸牽著我的手來吃，今天我開車載爸爸來。他依然點了大碗半筋半肉，話不多，但眼神滿是安心與笑意。",
+              photo: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80"
+            }
+          },
+          dishes: {
+            1: {
+              title: "炙燒明太子山藥",
+              date: "2026-06-20",
+              tags: ["炙燒", "居酒屋", "下酒小點"],
+              notes: "切厚片山藥煎至微焦，厚塗明太子美乃滋噴槍炙燒。配上冰鎮生啤酒，焦香與清爽在舌尖爆開，週末最棒的犒賞！",
+              photo: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80"
+            }
+          },
+          ai: {
+            1: {
+              title: "個人化晨間語音新聞 Agent",
+              date: "2026-07-15",
+              tags: ["Agent", "自動化", "工作流"],
+              notes: "串接 Gemini 與 Edge-TTS，清晨自動抓取國際科技頭條並合成專屬播報。用自己寫的工具開啟一天，成就感無可比擬。",
+              photo: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80"
+            }
+          },
+          sketches: {
+            1: {
+              title: "赤峰街午後轉角咖啡館",
+              date: "2026-08-08",
+              tags: ["街頭速寫", "咖啡館", "鋼筆淡彩"],
+              notes: "點了杯冰美式，用鋼筆花了二十分鐘勾勒出老街紅磚與午後斜陽。放慢節奏，才發現平凡的生活角落藏著如此豐沛的詩意。",
+              photo: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80"
+            }
+          },
+          trails: {
+            1: {
+              title: "玉山主峰單攻圓夢",
+              date: "2026-09-02",
+              tags: ["玉山", "台灣百岳", "遠征探索"],
+              notes: "凌晨兩點碎石坡的強風幾乎吹倒人。但在頂峰迎來金黃朝陽的那一刻，俯瞰群山雲海，眼眶不禁泛紅，深深敬畏這片壯麗大地！",
+              photo: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80"
+            }
+          }
+        };
+
+        saveDataToStorage();
+        renderTabs();
+        updateCategoryHeader();
+        updateGlobalCounters();
+        renderGrid();
+        showToast("✨ 精選示範回憶已載入！點擊卡片可查看詳細隨筆。", "success");
+      }
+    }
+
+    function resetAllData() {
+      if (confirm("⚠️ 確定要清除所有已解鎖的資料嗎？建議先點擊「匯出備份」！此動作無法復原。")) {
+        questData = {};
+        CATEGORIES.forEach(cat => {
+          questData[cat.id] = {};
+        });
+        saveDataToStorage();
+        renderTabs();
+        updateCategoryHeader();
+        updateGlobalCounters();
+        renderGrid();
+        showToast("已清空所有宮格資料，恢復全新挑戰！", "info");
+      }
+    }
+
+    // ==========================================
+    // 12. TOAST NOTIFICATION UTILITY
+    // ==========================================
+    function showToast(message, type = "info") {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      
+      const bgColors = {
+        success: 'bg-emerald-950/90 border-emerald-500/50 text-emerald-200',
+        warning: 'bg-amber-950/90 border-amber-500/50 text-amber-200',
+        error: 'bg-red-950/90 border-red-500/50 text-red-200',
+        info: 'bg-slate-900/90 border-slate-700 text-slate-200'
+      };
+
+      toast.className = `flex items-center gap-2 px-4 py-3 rounded-xl border shadow-xl text-xs font-medium backdrop-blur transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto ${bgColors[type] || bgColors.info}`;
+      toast.innerHTML = `<span>${message}</span>`;
+      
+      container.appendChild(toast);
+      
+      // Animate in
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      // Auto dismiss
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // Listen to ESC key to close open modals
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeUnlockModal();
+        closeDetailModal();
+      }
+    });
+
+    // Run on startup
+    window.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
