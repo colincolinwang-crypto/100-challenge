@@ -12,6 +12,10 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
+  <!-- Supabase JS Client & Config -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js"></script>
+
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -154,6 +158,10 @@
             </h1>
             <span class="hidden sm:inline-block px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/30">
               100 Challenge
+            </span>
+            <span id="cloud-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-slate-800 text-slate-400 border border-slate-700 transition">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+              <span>連線中...</span>
             </span>
           </div>
           <p class="text-sm sm:text-base text-slate-400 font-normal flex items-center gap-1.5">
@@ -624,9 +632,10 @@
     let currentSearchTerm = '';
     let currentDetailCard = null; // { categoryId, number }
     let uploadedImageBase64 = null;
+    let supabaseClient = null;
 
     // ==========================================
-    // 2. INITIALIZATION & STORAGE
+    // 2. INITIALIZATION & STORAGE (SUPABASE + LOCAL)
     // ==========================================
     function safeCreateIcons() {
       if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
@@ -634,7 +643,104 @@
       }
     }
 
-    function initApp() {
+    function initSupabase() {
+      if (window.QUESTBOOK_CONFIG && window.QUESTBOOK_CONFIG.supabaseUrl && window.QUESTBOOK_CONFIG.supabaseAnonKey && typeof supabase !== 'undefined') {
+        try {
+          supabaseClient = supabase.createClient(window.QUESTBOOK_CONFIG.supabaseUrl, window.QUESTBOOK_CONFIG.supabaseAnonKey);
+          console.log("Supabase Client initialized successfully!");
+        } catch (e) {
+          console.warn("Supabase init error:", e);
+        }
+      }
+    }
+
+    function updateCloudStatusUI(connected, message = null) {
+      const badge = document.getElementById('cloud-status-badge');
+      if (!badge) return;
+      if (connected) {
+        badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 transition";
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>${message || '☁️ 雲端同步 (Supabase)'}</span>`;
+      } else {
+        badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-slate-800 text-slate-400 border border-slate-700 transition";
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span><span>${message || '本機離線模式'}</span>`;
+      }
+    }
+
+    async function syncWithSupabase() {
+      if (!supabaseClient) {
+        updateCloudStatusUI(false);
+        return;
+      }
+
+      try {
+        // 1. Fetch categories dynamically from Supabase
+        const { data: catData, error: catError } = await supabaseClient
+          .from('quest_categories')
+          .select('*')
+          .order('order_index', { ascending: true });
+
+        if (catData && catData.length > 0) {
+          CATEGORIES = catData.map(c => ({
+            id: c.id,
+            icon: c.icon,
+            title: c.title,
+            shortTitle: c.short_title || c.title,
+            desc: c.description,
+            color: c.color || 'gold',
+            defaultTags: c.preset_tags || []
+          }));
+          setupFormDefaults();
+        }
+
+        // 2. Fetch quest_logs from Supabase
+        const { data: logData, error: logError } = await supabaseClient
+          .from('quest_logs')
+          .select('*');
+
+        if (logError) {
+          console.warn("Supabase fetch quest_logs error:", logError);
+          updateCloudStatusUI(false, "雲端連線失敗");
+          return;
+        }
+
+        if (logData) {
+          CATEGORIES.forEach(cat => {
+            if (!questData[cat.id]) questData[cat.id] = {};
+          });
+
+          logData.forEach(item => {
+            if (!questData[item.category_id]) {
+              questData[item.category_id] = {};
+            }
+            questData[item.category_id][item.slot_number] = {
+              title: item.title,
+              date: item.unlocked_date,
+              tags: item.tags || [],
+              notes: item.notes || '',
+              photo: item.photo_url || '',
+              updatedAt: item.updated_at
+            };
+          });
+
+          // Sync cloud to local storage cache
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(questData));
+          } catch (e) {}
+
+          updateCloudStatusUI(true);
+          renderTabs();
+          updateCategoryHeader();
+          updateGlobalCounters();
+          renderGrid();
+        }
+      } catch (err) {
+        console.error("Supabase sync exception:", err);
+        updateCloudStatusUI(false, "離線模式");
+      }
+    }
+
+    async function initApp() {
+      initSupabase();
       loadDataFromStorage();
       renderTabs();
       updateCategoryHeader();
@@ -642,6 +748,9 @@
       updateGlobalCounters();
       setupFormDefaults();
       safeCreateIcons();
+
+      // Cloud background sync
+      await syncWithSupabase();
     }
 
     function loadDataFromStorage() {
@@ -1144,17 +1253,40 @@
       // Check if updating or creating
       const isNew = !questData[categoryId][number];
 
+      const finalPhoto = uploadedImageBase64 || (questData[categoryId][number] ? questData[categoryId][number].photo : '') || '';
+
       // Save record
       questData[categoryId][number] = {
         title,
         date,
         tags,
         notes,
-        photo: uploadedImageBase64 || (questData[categoryId][number] ? questData[categoryId][number].photo : '') || '',
+        photo: finalPhoto,
         updatedAt: new Date().toISOString()
       };
 
       saveDataToStorage();
+
+      // Sync to Supabase Cloud
+      if (supabaseClient) {
+        supabaseClient.from('quest_logs').upsert({
+          category_id: categoryId,
+          slot_number: number,
+          title: title,
+          unlocked_date: date,
+          tags: tags,
+          notes: notes,
+          photo_url: finalPhoto,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'category_id,slot_number' }).then(({ error }) => {
+          if (error) {
+            console.error("Supabase upsert error:", error);
+            showToast("⚠️ 雲端備份同步失敗，已先存入本機！", "warning");
+          } else {
+            console.log("Supabase upsert success!");
+          }
+        });
+      }
 
       // Close modal
       closeUnlockModal();
@@ -1281,6 +1413,17 @@
 
       delete questData[categoryId][number];
       saveDataToStorage();
+
+      // Delete from Supabase Cloud
+      if (supabaseClient) {
+        supabaseClient.from('quest_logs').delete().match({
+          category_id: categoryId,
+          slot_number: number
+        }).then(({ error }) => {
+          if (error) console.error("Supabase delete error:", error);
+        });
+      }
+
       closeDetailModal();
 
       renderTabs();
@@ -1428,6 +1571,12 @@
           questData[cat.id] = {};
         });
         saveDataToStorage();
+
+        // Clear cloud table
+        if (supabaseClient) {
+          supabaseClient.from('quest_logs').delete().neq('slot_number', 0).then(() => {});
+        }
+
         renderTabs();
         updateCategoryHeader();
         updateGlobalCounters();
