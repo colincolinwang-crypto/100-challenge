@@ -295,6 +295,28 @@
         </div>
       </div>
 
+      <!-- Owner Only: 100 道下酒菜清單專屬維護入口 (僅在管理員登入且為下酒菜類別時顯示) -->
+      <div id="dish-planner-entry" class="hidden mt-4 pt-3.5 border-t border-slate-200 dark:border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gold-500/5 dark:bg-gold-500/10 p-3 sm:p-3.5 rounded-2xl border border-gold-500/20">
+        <div class="flex items-center gap-3">
+          <span class="p-2 rounded-xl bg-gold-500/20 text-gold-500 shrink-0">
+            <i data-lucide="chef-hat" class="w-5 h-5"></i>
+          </span>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">100 道下酒菜・私房菜單備忘庫</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gold-500 text-slate-950">管理員專用</span>
+            </div>
+            <p id="dish-planner-summary-text" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              已規劃 20 道菜單，其中 1 道已烹調解鎖、19 道待料理
+            </p>
+          </div>
+        </div>
+        <button onclick="openDishPlannerModal()" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-gold-500 hover:bg-gold-600 text-slate-950 font-bold text-xs transition shadow-sm hover:scale-[1.02] shrink-0">
+          <i data-lucide="book-open" class="w-4 h-4"></i>
+          <span>維護 100 道下酒菜清單</span>
+        </button>
+      </div>
+
       <!-- Specific Tag Filters (shown especially for ⛰️ 步道與遠征) -->
       <div id="trail-tag-filters" class="hidden mt-4 pt-3 border-t border-slate-200 dark:border-slate-800/60 flex items-center flex-wrap gap-1.5 text-xs">
         <span class="text-slate-500 dark:text-slate-400 mr-1 text-[11px] uppercase tracking-wider font-semibold">熱門標籤：</span>
@@ -344,7 +366,7 @@
     </button>
   </aside>
 
-  <!-- MODAL: AUTH / OWNER LOGIN (Google OAuth + Owner Passcode) -->
+  <!-- MODAL: AUTH / OWNER LOGIN (Google OAuth Only) -->
   <div id="auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
     <div class="bg-white dark:bg-brand-surface border border-slate-200 dark:border-slate-700/80 w-full max-w-md rounded-3xl p-6 shadow-2xl modal-enter relative my-auto">
       
@@ -359,13 +381,13 @@
         </div>
         <h3 class="text-xl font-bold text-slate-900 dark:text-white">擁有者身分驗證</h3>
         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          本挑戰手札對外公開瀏覽，僅擁有者本人可新增與編輯回憶卡片
+          本手札公開供親友讀取瀏覽，管理員請使用 Google 帳號登入解鎖與維護
         </p>
       </div>
 
-      <!-- Option 1: Google OAuth -->
-      <div class="space-y-3">
-        <button onclick="loginWithGoogle()" class="w-full py-3 px-4 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-white text-sm font-semibold flex items-center justify-center gap-3 shadow-sm transition hover:scale-[1.01]">
+      <!-- State A: 未登入 (顯示 Google 登入按鈕) -->
+      <div id="auth-logged-out-view" class="space-y-4">
+        <button onclick="loginWithGoogle()" class="w-full py-3.5 px-4 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-white text-sm font-bold flex items-center justify-center gap-3 shadow-md hover:shadow-lg transition-all hover:scale-[1.01]">
           <!-- Google G Logo SVG -->
           <svg class="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -373,34 +395,40 @@
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
           </svg>
-          <span>透過 Google 帳號快速登入</span>
+          <span>使用 Google 帳號一鍵登入</span>
         </button>
 
-        <div class="relative flex items-center justify-center py-2">
-          <div class="border-t border-slate-200 dark:border-slate-800 w-full"></div>
-          <span class="bg-white dark:bg-brand-surface px-3 text-[11px] text-slate-400 uppercase tracking-wider font-semibold">或使用擁有者金鑰</span>
-        </div>
-
-        <!-- Option 2: Quick Owner Passcode -->
-        <form onsubmit="handlePasscodeLogin(event)" class="space-y-3">
-          <div>
-            <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
-              輸入管理員通關密碼 (預設: wang100)
-            </label>
-            <input type="password" id="owner-passcode-input" placeholder="請輸入密碼..." required
-              class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-200 focus:outline-none focus:border-gold-500">
+        <!-- Google OAuth 提示卡片 -->
+        <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2.5">
+          <i data-lucide="info" class="w-4 h-4 shrink-0 mt-0.5 text-amber-500"></i>
+          <div class="leading-relaxed">
+            <span class="font-bold">Google 登入權限提示：</span>
+            <p class="mt-0.5 text-slate-600 dark:text-slate-300">
+              透過 Google 帳號驗證後，將自動開啟全站上傳、編輯、拍照解鎖與 100 道下酒菜專屬維護功能。未登入者僅供唯讀瀏覽。
+            </p>
           </div>
-          <button type="submit" class="w-full py-2.5 rounded-xl bg-gold-500 hover:bg-gold-600 text-slate-950 font-bold text-xs transition">
-            驗證並切換為擁有者
-          </button>
-        </form>
-
-        <!-- Logout button if logged in -->
-        <div id="logout-button-container" class="hidden pt-3 border-t border-slate-200 dark:border-slate-800">
-          <button onclick="handleLogout()" class="w-full py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 text-xs font-semibold transition border border-red-500/20">
-            登出擁有者權限（恢復訪客狀態）
-          </button>
         </div>
+      </div>
+
+      <!-- State B: 已登入 (顯示管理員身分資訊與登出按鈕) -->
+      <div id="auth-logged-in-view" class="hidden space-y-4">
+        <div class="p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-gold-500/20 border border-gold-500/40 text-gold-500 flex items-center justify-center font-bold text-lg">
+            👑
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-bold text-slate-900 dark:text-white">管理員身分已授權</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">Google</span>
+            </div>
+            <p id="auth-user-email-display" class="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5 font-mono">user@gmail.com</p>
+          </div>
+        </div>
+
+        <button onclick="handleLogout()" class="w-full py-3 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold transition border border-red-500/20 flex items-center justify-center gap-2">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+          <span>登出 Google 帳號（切換為訪客唯讀狀態）</span>
+        </button>
       </div>
 
     </div>
@@ -653,6 +681,94 @@
     </div>
   </div>
 
+  <!-- MODAL: 100 道下酒菜清單維護庫 (管理員專屬) -->
+  <div id="dish-planner-modal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-white dark:bg-brand-surface border border-slate-200 dark:border-slate-700/80 w-full max-w-2xl rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 shadow-2xl modal-enter relative max-h-[92vh] flex flex-col pb-safe">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3.5 border-b border-slate-200 dark:border-slate-800">
+        <div class="flex items-center gap-3">
+          <span class="p-2.5 rounded-2xl bg-gold-500/10 text-gold-500 border border-gold-500/30 text-2xl">
+            🍻
+          </span>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white">維護 100 道下酒菜清單</h3>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gold-500/15 text-gold-500 border border-gold-500/30">管理員專屬</span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              紀錄你的週末微醺菜單，隨時點擊「⚡ 烹調解鎖」直接開拍照片並點亮 100 宮格！
+            </p>
+          </div>
+        </div>
+        <button onclick="closeDishPlannerModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Quick Metrics Bar -->
+      <div class="grid grid-cols-3 gap-2.5 my-3.5">
+        <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-center">
+          <div class="text-[11px] text-slate-400 font-medium">總規劃清單</div>
+          <div id="planner-stat-total" class="font-mono text-base sm:text-lg font-bold text-slate-900 dark:text-white">0</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 text-center">
+          <div class="text-[11px] text-amber-600 dark:text-amber-400 font-medium">待烹調品項</div>
+          <div id="planner-stat-pending" class="font-mono text-base sm:text-lg font-bold text-amber-500">0</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/20 text-center">
+          <div class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">已烹調解鎖</div>
+          <div id="planner-stat-cooked" class="font-mono text-base sm:text-lg font-bold text-emerald-500">0</div>
+        </div>
+      </div>
+
+      <!-- Quick Add Form -->
+      <form onsubmit="handleAddNewDish(event)" class="bg-slate-50 dark:bg-slate-900/70 p-3 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2.5">
+        <div class="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-gold-500"></i>
+            <span>新增下酒菜靈感</span>
+          </div>
+          <button type="button" onclick="loadStarterDishes()" class="text-[11px] text-gold-500 hover:text-gold-400 hover:underline font-medium">
+            ⚡ 載入 20 道居酒屋經典菜單
+          </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <input type="text" id="new-dish-name" placeholder="下酒菜名 (例: 鹽烤明太子手羽先)" required
+            class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-gold-500">
+          <input type="text" id="new-dish-notes" placeholder="風味 / 酒款搭配 (例: 焦香濃郁，搭生啤酒)"
+            class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-gold-500">
+        </div>
+        <div class="flex justify-end">
+          <button type="submit" class="px-4 py-2 rounded-xl bg-gold-500 hover:bg-gold-600 text-slate-950 font-bold text-xs transition shadow-sm flex items-center gap-1.5">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+            <span>加入料理備忘清單</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Filter Tabs & Search -->
+      <div class="flex items-center justify-between gap-2 mt-4 mb-2">
+        <div class="inline-flex p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs">
+          <button type="button" onclick="setDishPlannerFilter('all')" id="planner-filter-all" class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 font-bold text-slate-900 dark:text-white shadow-sm transition">全部</button>
+          <button type="button" onclick="setDishPlannerFilter('pending')" id="planner-filter-pending" class="px-2.5 py-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">待料理</button>
+          <button type="button" onclick="setDishPlannerFilter('cooked')" id="planner-filter-cooked" class="px-2.5 py-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">已解鎖</button>
+        </div>
+        <div class="relative w-36 sm:w-48">
+          <i data-lucide="search" class="w-3 h-3 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+          <input type="text" id="dish-planner-search" oninput="handleDishPlannerSearch(this.value)" placeholder="搜尋菜單..."
+            class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg pl-7 pr-2 py-1 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-gold-500">
+        </div>
+      </div>
+
+      <!-- List Container -->
+      <div id="dish-planner-list" class="overflow-y-auto space-y-2 pr-1 min-h-[160px] max-h-[42vh] divide-y divide-slate-100 dark:divide-slate-800/60">
+        <!-- Generated by renderDishPlannerList() -->
+      </div>
+
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
@@ -720,11 +836,8 @@
 
     const STORAGE_KEY = 'wang_life_questbook_data_v1';
     const THEME_KEY = 'wang_life_questbook_theme_v1';
-    const OWNER_AUTH_KEY = 'wang_life_questbook_owner_auth_v1';
     const LAYOUT_KEY = 'wang_life_questbook_layout_v1';
-
-    // Default owner secret passcode
-    const DEFAULT_OWNER_PASSCODE = 'wang100';
+    const DISH_WISHLIST_KEY = 'wang_dish_wishlist_v1';
 
     // Application State
     let questData = {};
@@ -736,9 +849,14 @@
     let uploadedImageBase64 = null;
     let supabaseClient = null;
     
-    // Auth & Permission State
+    // Auth & Permission State (Google OAuth Only - No Passcode)
     let isOwner = false;
     let currentUserEmail = null;
+
+    // 100 Appetizers Wishlist State (Owner Only)
+    let dishWishlist = [];
+    let dishPlannerFilter = 'all'; // 'all' | 'pending' | 'cooked'
+    let dishPlannerSearchTerm = '';
 
     // Mobile / Desktop Layout State ('cards' = Large cards, 'matrix' = Dense 100-grid)
     let currentLayoutMode = 'cards';
@@ -770,38 +888,36 @@
     }
 
     // ==========================================
-    // 3. AUTHENTICATION & OWNER PERMISSIONS
+    // 3. AUTHENTICATION & OWNER PERMISSIONS (GOOGLE OAUTH ONLY)
     // ==========================================
     function checkOwnerAuth() {
-      // 1. Check local passcode session
-      const storedAuth = localStorage.getItem(OWNER_AUTH_KEY);
-      if (storedAuth === 'true') {
-        isOwner = true;
-      }
-
-      // 2. Check Supabase OAuth Session
+      // 嚴格依據 Supabase Google OAuth 登入工作階段
       if (supabaseClient) {
         supabaseClient.auth.getSession().then(({ data: { session } }) => {
-          if (session && session.user) {
-            isOwner = true;
-            currentUserEmail = session.user.email;
-          }
-          updateAuthUI();
+          handleSessionState(session);
         });
 
         supabaseClient.auth.onAuthStateChange((event, session) => {
-          if (session && session.user) {
-            isOwner = true;
-            currentUserEmail = session.user.email;
-          } else if (localStorage.getItem(OWNER_AUTH_KEY) !== 'true') {
-            isOwner = false;
-            currentUserEmail = null;
-          }
-          updateAuthUI();
+          handleSessionState(session);
         });
       } else {
+        isOwner = false;
+        currentUserEmail = null;
         updateAuthUI();
       }
+    }
+
+    function handleSessionState(session) {
+      if (session && session.user) {
+        isOwner = true;
+        currentUserEmail = session.user.email || '管理員';
+      } else {
+        isOwner = false;
+        currentUserEmail = null;
+      }
+      updateAuthUI();
+      renderGrid();
+      updateCategoryHeader();
     }
 
     function updateAuthUI() {
@@ -809,20 +925,32 @@
       const authBtn = document.getElementById('auth-btn');
       const fabContainer = document.getElementById('fab-container');
       const detailOwnerActions = document.getElementById('detail-owner-actions');
-      const logoutBtnContainer = document.getElementById('logout-button-container');
+      const loggedInView = document.getElementById('auth-logged-in-view');
+      const loggedOutView = document.getElementById('auth-logged-out-view');
+      const userEmailDisplay = document.getElementById('auth-user-email-display');
+      const dishPlannerEntry = document.getElementById('dish-planner-entry');
 
       if (isOwner) {
-        authStatusText.textContent = currentUserEmail ? `👑 擁有者 (${currentUserEmail.split('@')[0]})` : '👑 擁有者模式 (已解鎖)';
-        authBtn.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition border shadow-sm bg-gold-500/10 text-gold-600 dark:text-gold-400 border-gold-500/40";
+        const username = currentUserEmail ? currentUserEmail.split('@')[0] : '管理員';
+        if (authStatusText) authStatusText.textContent = `👑 管理員 (${username})`;
+        if (authBtn) authBtn.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition border shadow-sm bg-gold-500/10 text-gold-600 dark:text-gold-400 border-gold-500/40";
         if (fabContainer) fabContainer.classList.remove('hidden');
         if (detailOwnerActions) detailOwnerActions.classList.remove('hidden');
-        if (logoutBtnContainer) logoutBtnContainer.classList.remove('hidden');
+        if (loggedInView) loggedInView.classList.remove('hidden');
+        if (loggedOutView) loggedOutView.classList.add('hidden');
+        if (userEmailDisplay) userEmailDisplay.textContent = currentUserEmail || '已授權管理員';
+        if (dishPlannerEntry && currentCategoryId === 'dishes') {
+          dishPlannerEntry.classList.remove('hidden');
+          updateDishPlannerStats();
+        }
       } else {
-        authStatusText.textContent = '訪客模式 (登入)';
-        authBtn.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition border shadow-sm bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-gold-500/60";
+        if (authStatusText) authStatusText.textContent = '訪客模式 (登入)';
+        if (authBtn) authBtn.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition border shadow-sm bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-gold-500/60";
         if (fabContainer) fabContainer.classList.add('hidden');
         if (detailOwnerActions) detailOwnerActions.classList.add('hidden');
-        if (logoutBtnContainer) logoutBtnContainer.classList.add('hidden');
+        if (loggedInView) loggedInView.classList.add('hidden');
+        if (loggedOutView) loggedOutView.classList.remove('hidden');
+        if (dishPlannerEntry) dishPlannerEntry.classList.add('hidden');
       }
       safeCreateIcons();
     }
@@ -840,7 +968,7 @@
 
     async function loginWithGoogle() {
       if (!supabaseClient) {
-        showToast("⚠️ Supabase 尚未連線，請使用通關密碼登入", "warning");
+        showToast("⚠️ Supabase 尚未連線，請檢查網路設定", "warning");
         return;
       }
       try {
@@ -852,26 +980,11 @@
         });
         if (error) {
           console.error("Google 登入錯誤:", error);
-          showToast(`登入錯誤: ${error.message}，請改用密碼登入`, "error");
+          showToast(`Google 登入失敗: ${error.message}（請確認 Supabase 後台已啟用 Google 提供者）`, "error");
         }
       } catch (err) {
         console.error("Google 登入異常:", err);
-        showToast("請確認 Supabase Google Provider 設定已啟用", "warning");
-      }
-    }
-
-    function handlePasscodeLogin(e) {
-      e.preventDefault();
-      const input = document.getElementById('owner-passcode-input').value.trim();
-      if (input === DEFAULT_OWNER_PASSCODE || input === 'colin100' || input === 'wang') {
-        isOwner = true;
-        localStorage.setItem(OWNER_AUTH_KEY, 'true');
-        closeAuthModal();
-        updateAuthUI();
-        renderGrid();
-        showToast("🎉 歡迎回來！已切換為擁有者編輯模式", "success");
-      } else {
-        showToast("❌ 通關密碼不正確！", "error");
+        showToast("請確認 Supabase 後台 Authentication ➜ Providers 已啟用 Google", "error");
       }
     }
 
@@ -881,11 +994,302 @@
       }
       isOwner = false;
       currentUserEmail = null;
-      localStorage.removeItem(OWNER_AUTH_KEY);
+      try {
+        localStorage.removeItem('wang_life_questbook_owner_auth_v1');
+      } catch (e) {}
       closeAuthModal();
       updateAuthUI();
       renderGrid();
-      showToast("已切換為訪客唯讀模式", "info");
+      updateCategoryHeader();
+      showToast("👋 已登出管理員身分，目前為訪客唯讀模式", "info");
+    }
+
+    // ==========================================
+    // DISH PLANNER ENGINE (100 道下酒菜專屬維護庫)
+    // ==========================================
+    function getStarterDishesList() {
+      return [
+        { id: 'dish-1', name: '炙燒明太子山藥', notes: '鹹香濃郁微焦脆，搭生啤酒或Highball首選', done: false },
+        { id: 'dish-2', name: '蒜香奶油胡椒蝦', notes: '大火鑊氣，黑胡椒與蒜香撲鼻，吮指回味', done: false },
+        { id: 'dish-3', name: '柚子胡椒唐揚炸雞', notes: '外皮極酥肉汁豐沛，柚子胡椒微辛解膩', done: false },
+        { id: 'dish-4', name: '鹽烤厚切牛舌佐蔥鹽醬', notes: '脆彈多汁，搭辛口日本清酒極品', done: false },
+        { id: 'dish-5', name: '秘製清酒蒸蛤蜊', notes: '酒香與蛤蜊鮮甜高湯，暖胃又下酒', done: false },
+        { id: 'dish-6', name: '酥炸七味雞軟骨', notes: '咔滋香脆，淋上現擠檸檬汁與七味粉', done: false },
+        { id: 'dish-7', name: '慢燉和風牛筋白蘿蔔', notes: '慢火煨煮4小時，入味軟嫩化口', done: false },
+        { id: 'dish-8', name: '炙烤烏魚子佐蘋果青蒜', notes: '台味微醺奢華，搭高粱或威士忌', done: false },
+        { id: 'dish-9', name: '鹽烤松阪豬佐胡椒鹽', notes: '金黃酥脆邊緣，肉質脆嫩彈牙', done: false },
+        { id: 'dish-10', name: '麻油川七炒羊肉', notes: '麻油薑絲鑊氣大火快炒，熱炒王牌', done: false },
+        { id: 'dish-11', name: '和風芥末生牛肉薄片', notes: '薄切鮮甜，配洋蔥絲與特調和風汁', done: false },
+        { id: 'dish-12', name: '居酒屋高湯玉子燒', notes: '柴魚高湯濃郁，層層滑嫩微甜', done: false },
+        { id: 'dish-13', name: '醬烤雞肉大蔥串', notes: '炭火炙烤焦香，甜鹹照燒醬汁經典', done: false },
+        { id: 'dish-14', name: '蒜蓉五花肉捲金針菇', notes: '豬五花焦香包覆爽脆多汁金針菇', done: false },
+        { id: 'dish-15', name: '涼拌胡麻秋葵雙色牛蒡', notes: '清爽解膩冰鎮前菜，開胃良伴', done: false },
+        { id: 'dish-16', name: '炙燒比目魚鰭邊握手卷', notes: '油脂受熱融化在口中，香氣撲鼻', done: false },
+        { id: 'dish-17', name: '辣味噌炒豬五花高麗菜', notes: '甜脆高麗菜配香辣味噌，下酒必點', done: false },
+        { id: 'dish-18', name: '鹽烤秋刀魚佐蘿蔔泥', notes: '魚皮香脆魚肉鮮嫩，佐現磨蘿蔔泥', done: false },
+        { id: 'dish-19', name: '酥炸日式雞皮仙貝', notes: '薄脆如仙貝，撒上特調胡椒鹽', done: false },
+        { id: 'dish-20', name: '乾煸四季豆佐蒜味肉碎', notes: '煸至表皮微皺，鹹香嗆辣極致下酒', done: false }
+      ];
+    }
+
+    function loadDishWishlist() {
+      const stored = localStorage.getItem(DISH_WISHLIST_KEY);
+      if (stored) {
+        try {
+          dishWishlist = JSON.parse(stored);
+        } catch (e) {
+          dishWishlist = [];
+        }
+      }
+      if (!dishWishlist || dishWishlist.length === 0) {
+        dishWishlist = getStarterDishesList();
+        saveDishWishlist();
+      }
+    }
+
+    function saveDishWishlist() {
+      try {
+        localStorage.setItem(DISH_WISHLIST_KEY, JSON.stringify(dishWishlist));
+      } catch (e) {}
+    }
+
+    function updateDishPlannerStats() {
+      const unlockedDishes = Object.values(questData.dishes || {});
+      dishWishlist.forEach(dish => {
+        const isUnlockedInQuest = unlockedDishes.some(c => c.title && c.title.trim().toLowerCase() === dish.name.trim().toLowerCase());
+        if (isUnlockedInQuest) dish.done = true;
+      });
+
+      const total = dishWishlist.length;
+      const cooked = dishWishlist.filter(d => d.done).length;
+      const pending = total - cooked;
+
+      const summaryEl = document.getElementById('dish-planner-summary-text');
+      if (summaryEl) {
+        summaryEl.textContent = `已規劃 ${total} 道菜單，其中 ${cooked} 道已烹調解鎖、${pending} 道待料理`;
+      }
+
+      const statTotal = document.getElementById('planner-stat-total');
+      const statPending = document.getElementById('planner-stat-pending');
+      const statCooked = document.getElementById('planner-stat-cooked');
+      if (statTotal) statTotal.textContent = total;
+      if (statPending) statPending.textContent = pending;
+      if (statCooked) statCooked.textContent = cooked;
+    }
+
+    function openDishPlannerModal() {
+      if (!isOwner) {
+        showToast("此功能僅限管理員擁有者使用", "warning");
+        openAuthModal();
+        return;
+      }
+      const modal = document.getElementById('dish-planner-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        renderDishPlannerList();
+        safeCreateIcons();
+      }
+    }
+
+    function closeDishPlannerModal() {
+      const modal = document.getElementById('dish-planner-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function setDishPlannerFilter(filter) {
+      dishPlannerFilter = filter;
+      ['all', 'pending', 'cooked'].forEach(f => {
+        const btn = document.getElementById(`planner-filter-${f}`);
+        if (!btn) return;
+        if (f === filter) {
+          btn.className = "px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 font-bold text-slate-900 dark:text-white shadow-sm transition";
+        } else {
+          btn.className = "px-2.5 py-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
+        }
+      });
+      renderDishPlannerList();
+    }
+
+    function handleDishPlannerSearch(val) {
+      dishPlannerSearchTerm = val.trim();
+      renderDishPlannerList();
+    }
+
+    function renderDishPlannerList() {
+      const container = document.getElementById('dish-planner-list');
+      if (!container) return;
+
+      const unlockedDishes = Object.values(questData.dishes || {});
+      dishWishlist.forEach(dish => {
+        const matched = unlockedDishes.some(c => c.title && c.title.trim().toLowerCase() === dish.name.trim().toLowerCase());
+        if (matched) dish.done = true;
+      });
+
+      let filtered = dishWishlist.filter(dish => {
+        const matchesFilter = 
+          dishPlannerFilter === 'all' ? true :
+          dishPlannerFilter === 'pending' ? !dish.done :
+          dish.done;
+        
+        const matchesSearch = !dishPlannerSearchTerm || 
+          dish.name.toLowerCase().includes(dishPlannerSearchTerm.toLowerCase()) ||
+          (dish.notes && dish.notes.toLowerCase().includes(dishPlannerSearchTerm.toLowerCase()));
+
+        return matchesFilter && matchesSearch;
+      });
+
+      updateDishPlannerStats();
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="py-10 text-center">
+            <p class="text-xs text-slate-400 dark:text-slate-500">沒有符合條件的下酒菜項目</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map((dish) => {
+        const isDone = !!dish.done;
+        const globalIndex = dishWishlist.indexOf(dish) + 1;
+        return `
+          <div class="pt-2.5 pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 hover:bg-slate-50/70 dark:hover:bg-slate-800/40 p-2.5 rounded-xl transition">
+            <div class="flex items-start gap-2.5 min-w-0 flex-1">
+              <span class="font-mono text-xs font-bold text-slate-400 dark:text-slate-500 shrink-0 mt-0.5">
+                #${String(globalIndex).padStart(2, '0')}
+              </span>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-sm font-bold text-slate-900 dark:text-white ${isDone ? 'line-through text-slate-400 dark:text-slate-500' : ''}">
+                    ${escapeHtml(dish.name)}
+                  </span>
+                  ${isDone ? `
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                      ✅ 已烹調解鎖
+                    </span>
+                  ` : `
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                      ⏳ 待料理
+                    </span>
+                  `}
+                </div>
+                ${dish.notes ? `
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    ${escapeHtml(dish.notes)}
+                  </p>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
+              ${!isDone ? `
+                <button onclick="cookAndUnlockDish('${escapeAttr(dish.name)}', '${escapeAttr(dish.notes || '')}')" 
+                  class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-gold-500/15 hover:bg-gold-500/25 text-gold-600 dark:text-gold-400 border border-gold-500/40 text-xs font-bold transition">
+                  <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                  <span>烹調解鎖</span>
+                </button>
+              ` : ''}
+              <button onclick="toggleDishStatus('${dish.id}')" title="${isDone ? '標記為待料理' : '標記為已完成'}"
+                class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                <i data-lucide="${isDone ? 'rotate-ccw' : 'check'}" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="deleteDish('${dish.id}')" title="刪除"
+                class="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-500/10 transition">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      safeCreateIcons();
+    }
+
+    function handleAddNewDish(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById('new-dish-name');
+      const notesInput = document.getElementById('new-dish-notes');
+      const name = nameInput.value.trim();
+      const notes = notesInput.value.trim();
+
+      if (!name) return;
+
+      const newDish = {
+        id: 'dish_' + Date.now(),
+        name: name,
+        notes: notes,
+        done: false
+      };
+
+      dishWishlist.push(newDish);
+      saveDishWishlist();
+      nameInput.value = '';
+      notesInput.value = '';
+      renderDishPlannerList();
+      showToast(`✨ 已新增「${name}」至下酒菜清單！`, "success");
+    }
+
+    function cookAndUnlockDish(name, notes) {
+      closeDishPlannerModal();
+      openUnlockModal('dishes', null, name, notes, '居酒屋,下酒小點');
+      showToast(`⚡ 已載入「${name}」，拍照並確認後即可解鎖！`, "info");
+    }
+
+    function toggleDishStatus(dishId) {
+      const dish = dishWishlist.find(d => d.id === dishId);
+      if (dish) {
+        dish.done = !dish.done;
+        saveDishWishlist();
+        renderDishPlannerList();
+        showToast(`已將「${dish.name}」標記為${dish.done ? '已完成' : '待料理'}`, "info");
+      }
+    }
+
+    function deleteDish(dishId) {
+      const dish = dishWishlist.find(d => d.id === dishId);
+      if (!dish) return;
+      if (confirm(`確定要將「${dish.name}」從下酒菜清單中移除嗎？`)) {
+        dishWishlist = dishWishlist.filter(d => d.id !== dishId);
+        saveDishWishlist();
+        renderDishPlannerList();
+        showToast(`已移除「${dish.name}」`, "info");
+      }
+    }
+
+    function loadStarterDishes() {
+      if (confirm("是否載入 20 道經典居酒屋私房下酒菜靈感？這將會與現有清單合併。")) {
+        const starter = getStarterDishesList();
+        starter.forEach(s => {
+          if (!dishWishlist.some(d => d.name === s.name)) {
+            dishWishlist.push(s);
+          }
+        });
+        saveDishWishlist();
+        renderDishPlannerList();
+        showToast("🍻 已載入居酒屋下酒菜經典靈感！", "success");
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function escapeAttr(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, "\\'");
     }
 
     // ==========================================
@@ -1040,6 +1444,7 @@
       initLayoutMode();
       initSupabase();
       loadDataFromStorage();
+      loadDishWishlist();
       checkOwnerAuth();
       renderTabs();
       updateCategoryHeader();
@@ -1144,6 +1549,16 @@
         trailTagBar.classList.remove('hidden');
       } else {
         trailTagBar.classList.add('hidden');
+      }
+
+      const dishPlannerEntry = document.getElementById('dish-planner-entry');
+      if (dishPlannerEntry) {
+        if (currentCategoryId === 'dishes' && isOwner) {
+          dishPlannerEntry.classList.remove('hidden');
+          updateDishPlannerStats();
+        } else {
+          dishPlannerEntry.classList.add('hidden');
+        }
       }
     }
 
@@ -1397,7 +1812,7 @@
       document.getElementById('form-date').value = today;
     }
 
-    function openUnlockModal(presetCatId = null, presetNumber = null) {
+    function openUnlockModal(presetCatId = null, presetNumber = null, presetTitle = null, presetNotes = null, presetTag = null) {
       if (!isOwner) {
         showToast("請先點擊右上角「登入」切換為擁有者身分！", "warning");
         openAuthModal();
@@ -1410,12 +1825,12 @@
       document.getElementById('form-category').value = categoryToUse;
       onFormCategoryChange(categoryToUse, presetNumber);
 
-      document.getElementById('modal-form-title').textContent = '解鎖全新精彩瞬間';
+      document.getElementById('modal-form-title').textContent = presetTitle ? `解鎖料理：${presetTitle}` : '解鎖全新精彩瞬間';
       document.getElementById('submit-btn-text').textContent = '確定解鎖！';
-      document.getElementById('form-title').value = '';
-      document.getElementById('form-notes').value = '';
-      document.getElementById('form-tags').value = '';
-      document.getElementById('char-counter').textContent = '0 / 100';
+      document.getElementById('form-title').value = presetTitle || '';
+      document.getElementById('form-notes').value = presetNotes || '';
+      document.getElementById('form-tags').value = presetTag || '';
+      document.getElementById('char-counter').textContent = `${(presetNotes || '').length} / 100`;
       
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('form-date').value = today;
@@ -1625,6 +2040,16 @@
 
       saveDataToStorage();
 
+      // 如果解鎖的是下酒菜，連動更新料理清單狀態
+      if (categoryId === 'dishes') {
+        const matched = dishWishlist.find(d => d.name && d.name.trim().toLowerCase() === title.trim().toLowerCase());
+        if (matched) {
+          matched.done = true;
+          saveDishWishlist();
+        }
+        updateDishPlannerStats();
+      }
+
       // Sync to Supabase Cloud
       if (supabaseClient) {
         supabaseClient.from('quest_logs').upsert({
@@ -1782,6 +2207,10 @@
       delete questData[categoryId][number];
       saveDataToStorage();
 
+      if (categoryId === 'dishes') {
+        updateDishPlannerStats();
+      }
+
       if (supabaseClient) {
         supabaseClient.from('quest_logs').delete().match({
           category_id: categoryId,
@@ -1807,10 +2236,11 @@
     function exportData() {
       const exportObject = {
         app: "Wang's Life Questbook",
-        version: "2.0",
+        version: "2.1",
         exportDate: new Date().toISOString(),
         totalUnlocked: Object.values(questData).reduce((sum, cat) => sum + Object.keys(cat).length, 0),
-        quests: questData
+        quests: questData,
+        dishWishlist: dishWishlist
       };
 
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObject, null, 2));
@@ -1953,6 +2383,7 @@
         closeUnlockModal();
         closeDetailModal();
         closeAuthModal();
+        closeDishPlannerModal();
       }
     });
 
