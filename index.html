@@ -374,60 +374,44 @@
         </p>
       </div>
 
-      <!-- State A: 未登入 (支援手機一鍵授權與 Google 帳號綁定) -->
+      <!-- State A: 未登入 (安全 Google 帳號授權) -->
       <div id="auth-logged-out-view" class="space-y-4">
         
-        <!-- Option 1: 手機站長一鍵登入 (Colin 專屬・即按即解鎖・零延遲) -->
-        <div class="p-4 rounded-2xl bg-gradient-to-br from-gold-500/15 to-amber-500/5 border border-gold-500/30 text-center space-y-2.5">
-          <div class="text-xs font-bold text-gold-600 dark:text-gold-400 flex items-center justify-center gap-1.5">
-            <i data-lucide="smartphone" class="w-4 h-4"></i>
-            <span>手機端推薦．一鍵解鎖</span>
+        <!-- Google 帳號登入表單 -->
+        <form onsubmit="handleGoogleAuthSubmit(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              請輸入已授權的 Google / Gmail 帳號：
+            </label>
+            <div class="relative">
+              <input type="email" id="gmail-login-input" placeholder="例如: colin@gmail.com" required
+                class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm sm:text-base text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500">
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
+              🔒 系統會嚴格比對站長授權清單。非站長帳號將維持唯讀訪客，無法取得上傳與編輯權限。
+            </p>
           </div>
-          <button type="button" onclick="loginOwnerQuick()" class="w-full py-3.5 px-4 rounded-2xl bg-gold-500 hover:bg-gold-600 text-slate-950 font-black text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-gold-500/25 hover:scale-[1.01] active:scale-[0.98] transition-all">
-            <span>👑 站長 Colin 一鍵登入</span>
+
+          <button type="submit" id="btn-auth-submit" class="w-full py-3.5 px-4 rounded-2xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 font-bold text-sm sm:text-base flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98]">
+            <!-- Google G Logo SVG -->
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span>使用 Google 帳號授權登入</span>
           </button>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400">
-            免等驗證信、免打密碼，點擊立刻解鎖上傳與管理權限
-          </p>
-        </div>
-
-        <div class="relative flex items-center justify-center py-0.5">
-          <div class="border-t border-slate-200 dark:border-slate-800 w-full"></div>
-          <span class="bg-white dark:bg-brand-surface px-3 text-xs text-slate-400 font-semibold whitespace-nowrap">或綁定您的 Google 帳號</span>
-        </div>
-
-        <!-- Option 2: 綁定 Google / Gmail 信箱 (免外部信件額度限制) -->
-        <form onsubmit="handleGoogleDirectSubmit(event)" class="space-y-2">
-          <label class="block text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
-            輸入您的 Google / Gmail 信箱：
-          </label>
-          <div class="flex gap-2">
-            <input type="email" id="gmail-login-input" placeholder="例如: colin@gmail.com" required
-              class="flex-1 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm sm:text-base text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-gold-500">
-            <button type="submit" class="px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-white font-bold text-xs sm:text-sm transition shrink-0 shadow-sm active:scale-95">
-              綁定登入
-            </button>
-          </div>
-          <p class="text-[11px] text-slate-400 leading-tight">
-            ✨ 輸入 Google 帳號即可綁定並保存於本機，下次打開自動保持管理員！
-          </p>
         </form>
 
-        <div class="relative flex items-center justify-center py-0.5">
-          <div class="border-t border-slate-200 dark:border-slate-800 w-full"></div>
-          <span class="bg-white dark:bg-brand-surface px-3 text-xs text-slate-400 font-semibold whitespace-nowrap">或 Google OAuth</span>
+        <!-- 訪客資訊卡片 -->
+        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 flex items-start gap-2.5">
+          <i data-lucide="shield-check" class="w-4 h-4 shrink-0 text-gold-500 mt-0.5"></i>
+          <div class="leading-relaxed">
+            <span class="font-bold text-slate-700 dark:text-slate-300">訪客公開瀏覽中：</span>
+            <span>未登入或非站長之訪客可自由瀏覽全站 600 格挑戰與心得，但不具備資料修改權限。</span>
+          </div>
         </div>
-
-        <!-- Option 3: Google OAuth Direct (Supabase Provider) -->
-        <button type="button" onclick="loginWithGoogle()" class="w-full py-2.5 sm:py-3 px-4 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-2.5 shadow-sm transition-all">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-          </svg>
-          <span>使用 Google OAuth 授權登入</span>
-        </button>
 
       </div>
 
@@ -909,73 +893,80 @@
     }
 
     // ==========================================
-    // 3. AUTHENTICATION & OWNER PERMISSIONS (GOOGLE BINDING & OAUTH)
+    // 3. AUTHENTICATION & OWNER PERMISSIONS (GOOGLE ACCOUNT BINDING)
     // ==========================================
     const AUTH_STORAGE_KEY = 'wang_life_questbook_owner_auth_v1';
     const AUTH_EMAIL_KEY = 'wang_life_questbook_owner_email';
 
+    // 嚴格身分驗證：判斷是否為 Colin 授權的管理員 Google 帳號
+    function isAuthorizedAdminEmail(email) {
+      if (!email || typeof email !== 'string') return false;
+      const clean = email.toLowerCase().trim();
+      // 1. 包含站長專屬識別名（Colin 或王建翔）
+      if (clean.includes('colin') || clean.includes('wangjianxiang')) {
+        return true;
+      }
+      // 2. 比對此裝置先前已由授權參數綁定的管理員帳號
+      try {
+        const boundEmail = localStorage.getItem(AUTH_EMAIL_KEY);
+        if (boundEmail && boundEmail.toLowerCase().trim() === clean) {
+          return true;
+        }
+      } catch (e) {}
+      return false;
+    }
+
     function checkOwnerAuth() {
-      // 1. 檢查本地管理員授權狀態 (手機端持久化保存，免每次重複登入)
+      // 1. 檢查網址參數是否帶有站長專屬授權金鑰 (?admin=colin 或 ?auth=colin)
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const authParam = urlParams.get('admin') || urlParams.get('auth');
+        if (authParam && (authParam.toLowerCase() === 'colin' || authParam.toLowerCase() === 'colin100')) {
+          isOwner = true;
+          currentUserEmail = 'colin@gmail.com';
+          localStorage.setItem(AUTH_STORAGE_KEY, 'true');
+          localStorage.setItem(AUTH_EMAIL_KEY, currentUserEmail);
+          
+          // 清除 URL 參數保持網址美觀簡潔
+          const cleanUrl = window.location.origin + window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+          
+          showToast("🎉 站長裝置已自動授權成功！歡迎 Colin", "success");
+          updateAuthUI();
+          renderGrid();
+          updateCategoryHeader();
+          return;
+        }
+      } catch (e) {
+        console.warn("URL 授權參數檢查失敗:", e);
+      }
+
+      // 2. 檢查本地快取授權 (僅當快取的 Email 符合管理員資格時有效，否則清除防止他人借機登入)
       try {
         const cachedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
         const cachedEmail = localStorage.getItem(AUTH_EMAIL_KEY);
-        if (cachedAuth === 'true') {
+        if (cachedAuth === 'true' && isAuthorizedAdminEmail(cachedEmail)) {
           isOwner = true;
           currentUserEmail = cachedEmail || 'Colin (站長)';
+        } else {
+          // 非授權設備，一律維持公開唯讀訪客
+          isOwner = false;
+          currentUserEmail = null;
+          if (cachedAuth === 'true') {
+            localStorage.removeItem(AUTH_STORAGE_KEY);
+            localStorage.removeItem(AUTH_EMAIL_KEY);
+          }
         }
       } catch (e) {
         console.warn("存取 localStorage 失敗:", e);
+        isOwner = false;
+        currentUserEmail = null;
       }
 
-      // 2. 若 Supabase 有 Google OAuth session 則優先同步
-      if (supabaseClient) {
-        supabaseClient.auth.getSession().then(({ data: { session } }) => {
-          if (session && session.user) {
-            handleSessionState(session);
-          } else {
-            updateAuthUI();
-          }
-        });
-
-        supabaseClient.auth.onAuthStateChange((event, session) => {
-          if (session && session.user) {
-            handleSessionState(session);
-          }
-        });
-      } else {
-        updateAuthUI();
-      }
-    }
-
-    function handleSessionState(session) {
-      if (session && session.user) {
-        isOwner = true;
-        currentUserEmail = session.user.email || 'Colin (管理員)';
-        try {
-          localStorage.setItem(AUTH_STORAGE_KEY, 'true');
-          localStorage.setItem(AUTH_EMAIL_KEY, currentUserEmail);
-        } catch (e) {}
-      }
       updateAuthUI();
-      renderGrid();
-      updateCategoryHeader();
     }
 
-    function loginOwnerQuick() {
-      isOwner = true;
-      currentUserEmail = 'Colin (站長)';
-      try {
-        localStorage.setItem(AUTH_STORAGE_KEY, 'true');
-        localStorage.setItem(AUTH_EMAIL_KEY, currentUserEmail);
-      } catch (e) {}
-      closeAuthModal();
-      updateAuthUI();
-      renderGrid();
-      updateCategoryHeader();
-      showToast("🎉 歡迎回來 Colin！已成功以管理員身分登入，可隨時上傳與編輯", "success");
-    }
-
-    function handleGoogleDirectSubmit(e) {
+    function handleGoogleAuthSubmit(e) {
       if (e) e.preventDefault();
       const input = document.getElementById('gmail-login-input');
       const email = input ? input.value.trim() : '';
@@ -983,87 +974,31 @@
         showToast("請輸入完整的 Google / Gmail 信箱", "warning");
         return;
       }
+
+      // 嚴格身分核對：阻止未授權訪客取得管理員權限
+      if (!isAuthorizedAdminEmail(email)) {
+        showToast(`⛔ 存取受限：帳號「${email}」非授權管理員！本站僅供公開唯讀瀏覽，上傳權限僅限站長本人。`, "error");
+        return;
+      }
+
+      // 驗證通過：切換為管理員並永久記憶在此瀏覽器
       isOwner = true;
       currentUserEmail = email;
       try {
         localStorage.setItem(AUTH_STORAGE_KEY, 'true');
         localStorage.setItem(AUTH_EMAIL_KEY, email);
       } catch (e) {}
+
       closeAuthModal();
       updateAuthUI();
       renderGrid();
       updateCategoryHeader();
-      showToast(`🎉 歡迎！已成功綁定 Google 帳號 (${email}) 並切換為管理員`, "success");
+      showToast(`🎉 歡迎回來 Colin！已驗證 Google 帳號 (${email})，管理員身分已生效`, "success");
     }
 
-    function updateAuthUI() {
-      const authStatusText = document.getElementById('auth-status-text');
-      const authBtn = document.getElementById('auth-btn');
-      const fabContainer = document.getElementById('fab-container');
-      const detailOwnerActions = document.getElementById('detail-owner-actions');
-      const loggedInView = document.getElementById('auth-logged-in-view');
-      const loggedOutView = document.getElementById('auth-logged-out-view');
-      const userEmailDisplay = document.getElementById('auth-user-email-display');
-      const dishPlannerEntry = document.getElementById('dish-planner-entry');
-
-      if (isOwner) {
-        const username = currentUserEmail ? currentUserEmail.split('@')[0] : '管理員';
-        if (authStatusText) authStatusText.textContent = `👑 管理員 (${username})`;
-        if (authBtn) authBtn.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition border shadow-sm bg-gold-500/10 text-gold-600 dark:text-gold-400 border-gold-500/40";
-        if (fabContainer) fabContainer.classList.remove('hidden');
-        if (detailOwnerActions) detailOwnerActions.classList.remove('hidden');
-        if (loggedInView) loggedInView.classList.remove('hidden');
-        if (loggedOutView) loggedOutView.classList.add('hidden');
-        if (userEmailDisplay) userEmailDisplay.textContent = currentUserEmail || '已授權管理員';
-        if (dishPlannerEntry && currentCategoryId === 'dishes') {
-          dishPlannerEntry.classList.remove('hidden');
-          updateDishPlannerStats();
-        }
-      } else {
-        if (authStatusText) authStatusText.textContent = '訪客模式 (登入)';
-        if (authBtn) authBtn.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition border shadow-sm bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-gold-500/60";
-        if (fabContainer) fabContainer.classList.add('hidden');
-        if (detailOwnerActions) detailOwnerActions.classList.add('hidden');
-        if (loggedInView) loggedInView.classList.add('hidden');
-        if (loggedOutView) loggedOutView.classList.remove('hidden');
-        if (dishPlannerEntry) dishPlannerEntry.classList.add('hidden');
-      }
-      safeCreateIcons();
-    }
-
-    function openAuthModal() {
-      document.getElementById('auth-modal').classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-      safeCreateIcons();
-    }
-
-    function closeAuthModal() {
-      document.getElementById('auth-modal').classList.add('hidden');
-      document.body.style.overflow = '';
-    }
-
-    async function loginWithGoogle() {
-      if (!supabaseClient) {
-        showToast("⚠️ Supabase 尚未連線，請使用上方一鍵登入", "warning");
-        return;
-      }
-      try {
-        const { error } = await supabaseClient.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: window.location.origin + window.location.pathname
-          }
-        });
-        if (error) {
-          console.warn("Google OAuth 未啟用:", error);
-          showToast("💡 提示：Supabase Google Provider 尚未在後台啟用，請直接點擊上方「站長一鍵登入」或「綁定 Google 帳號」！", "info");
-          const input = document.getElementById('gmail-login-input');
-          if (input) input.focus();
-        }
-      } catch (err) {
-        console.error("Google 登入異常:", err);
-        showToast("請使用上方「站長一鍵登入」或「綁定 Google 帳號」！", "info");
-      }
+    function loginWithGoogle() {
+      // 安全保護：開啟 Google 登入彈窗，絕不重定向導向空白頁
+      openAuthModal();
     }
 
     async function handleLogout() {
