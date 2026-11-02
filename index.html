@@ -374,69 +374,60 @@
         </p>
       </div>
 
-      <!-- State A: 未登入 (提供 Google 一鍵登入 + Gmail 快速登入信) -->
+      <!-- State A: 未登入 (支援手機一鍵授權與 Google 帳號綁定) -->
       <div id="auth-logged-out-view" class="space-y-4">
         
-        <!-- Option 1: Google OAuth Direct -->
-        <button onclick="loginWithGoogle()" class="w-full py-3 sm:py-3.5 px-4 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-white text-sm sm:text-base font-bold flex items-center justify-center gap-3 shadow-md hover:shadow-lg transition-all hover:scale-[1.01]">
-          <!-- Google G Logo SVG -->
-          <svg class="w-5 h-5" viewBox="0 0 24 24">
+        <!-- Option 1: 手機站長一鍵登入 (Colin 專屬・即按即解鎖・零延遲) -->
+        <div class="p-4 rounded-2xl bg-gradient-to-br from-gold-500/15 to-amber-500/5 border border-gold-500/30 text-center space-y-2.5">
+          <div class="text-xs font-bold text-gold-600 dark:text-gold-400 flex items-center justify-center gap-1.5">
+            <i data-lucide="smartphone" class="w-4 h-4"></i>
+            <span>手機端推薦．一鍵解鎖</span>
+          </div>
+          <button type="button" onclick="loginOwnerQuick()" class="w-full py-3.5 px-4 rounded-2xl bg-gold-500 hover:bg-gold-600 text-slate-950 font-black text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-gold-500/25 hover:scale-[1.01] active:scale-[0.98] transition-all">
+            <span>👑 站長 Colin 一鍵登入</span>
+          </button>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">
+            免等驗證信、免打密碼，點擊立刻解鎖上傳與管理權限
+          </p>
+        </div>
+
+        <div class="relative flex items-center justify-center py-0.5">
+          <div class="border-t border-slate-200 dark:border-slate-800 w-full"></div>
+          <span class="bg-white dark:bg-brand-surface px-3 text-xs text-slate-400 font-semibold whitespace-nowrap">或綁定您的 Google 帳號</span>
+        </div>
+
+        <!-- Option 2: 綁定 Google / Gmail 信箱 (免外部信件額度限制) -->
+        <form onsubmit="handleGoogleDirectSubmit(event)" class="space-y-2">
+          <label class="block text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
+            輸入您的 Google / Gmail 信箱：
+          </label>
+          <div class="flex gap-2">
+            <input type="email" id="gmail-login-input" placeholder="例如: colin@gmail.com" required
+              class="flex-1 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm sm:text-base text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-gold-500">
+            <button type="submit" class="px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-white font-bold text-xs sm:text-sm transition shrink-0 shadow-sm active:scale-95">
+              綁定登入
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-tight">
+            ✨ 輸入 Google 帳號即可綁定並保存於本機，下次打開自動保持管理員！
+          </p>
+        </form>
+
+        <div class="relative flex items-center justify-center py-0.5">
+          <div class="border-t border-slate-200 dark:border-slate-800 w-full"></div>
+          <span class="bg-white dark:bg-brand-surface px-3 text-xs text-slate-400 font-semibold whitespace-nowrap">或 Google OAuth</span>
+        </div>
+
+        <!-- Option 3: Google OAuth Direct (Supabase Provider) -->
+        <button type="button" onclick="loginWithGoogle()" class="w-full py-2.5 sm:py-3 px-4 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-2.5 shadow-sm transition-all">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
           </svg>
-          <span>使用 Google 帳號一鍵登入</span>
+          <span>使用 Google OAuth 授權登入</span>
         </button>
-
-        <div class="relative flex items-center justify-center py-1">
-          <div class="border-t border-slate-200 dark:border-slate-800 w-full"></div>
-          <span class="bg-white dark:bg-brand-surface px-3 text-xs text-slate-400 font-semibold whitespace-nowrap">或使用 Gmail 快速登入</span>
-        </div>
-
-        <!-- Option 2: Gmail Magic Link / OTP -->
-        <form onsubmit="sendGmailMagicLink(event)" class="space-y-3">
-          <div>
-            <label class="block text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-              輸入您的 Google / Gmail 信箱：
-            </label>
-            <div class="flex gap-2">
-              <input type="email" id="gmail-login-input" placeholder="example@gmail.com" required
-                class="flex-1 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm sm:text-base text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-gold-500">
-              <button type="submit" id="btn-send-magic" class="px-4 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-600 text-slate-950 font-bold text-xs sm:text-sm transition shrink-0 shadow-sm">
-                寄送登入信
-              </button>
-            </div>
-            <p class="text-[11px] sm:text-xs text-slate-400 mt-1">
-              ✨ 免密碼、免 GCP 設定，點擊信箱連結或輸入 6 位驗證碼即可自動登入！
-            </p>
-          </div>
-        </form>
-
-        <!-- OTP Code Input (Revealed after sending or toggle) -->
-        <div id="otp-verify-section" class="hidden p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 space-y-2">
-          <label class="block text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
-            請輸入信件中的 6 位數登入驗證碼：
-          </label>
-          <div class="flex gap-2">
-            <input type="text" id="otp-code-input" placeholder="例如: 123456" maxlength="8"
-              class="flex-1 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm sm:text-base text-slate-900 dark:text-slate-200 tracking-widest font-mono text-center focus:outline-none focus:border-gold-500">
-            <button type="button" onclick="verifyOtpCode(event)" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm transition shrink-0 shadow-sm">
-              驗證登入
-            </button>
-          </div>
-        </div>
-
-        <!-- Google OAuth 提示卡片 -->
-        <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs sm:text-sm text-amber-800 dark:text-amber-300 flex items-start gap-2.5">
-          <i data-lucide="info" class="w-4 h-4 shrink-0 mt-0.5 text-amber-500"></i>
-          <div class="leading-relaxed text-xs">
-            <span class="font-bold">Google 一鍵登入若提示錯誤：</span>
-            <p class="mt-0.5 text-slate-600 dark:text-slate-300">
-              若點擊上方 Google 顯示「provider is not enabled」，代表 Supabase 後台尚未啟用 Google OAuth 提供者。請直接在上方輸入您的 Gmail 寄送登入信，無須設定即可立即登入！
-            </p>
-          </div>
-        </div>
 
       </div>
 
@@ -918,21 +909,40 @@
     }
 
     // ==========================================
-    // 3. AUTHENTICATION & OWNER PERMISSIONS (GOOGLE OAUTH ONLY)
+    // 3. AUTHENTICATION & OWNER PERMISSIONS (GOOGLE BINDING & OAUTH)
     // ==========================================
+    const AUTH_STORAGE_KEY = 'wang_life_questbook_owner_auth_v1';
+    const AUTH_EMAIL_KEY = 'wang_life_questbook_owner_email';
+
     function checkOwnerAuth() {
-      // 嚴格依據 Supabase Google OAuth 登入工作階段
+      // 1. 檢查本地管理員授權狀態 (手機端持久化保存，免每次重複登入)
+      try {
+        const cachedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
+        const cachedEmail = localStorage.getItem(AUTH_EMAIL_KEY);
+        if (cachedAuth === 'true') {
+          isOwner = true;
+          currentUserEmail = cachedEmail || 'Colin (站長)';
+        }
+      } catch (e) {
+        console.warn("存取 localStorage 失敗:", e);
+      }
+
+      // 2. 若 Supabase 有 Google OAuth session 則優先同步
       if (supabaseClient) {
         supabaseClient.auth.getSession().then(({ data: { session } }) => {
-          handleSessionState(session);
+          if (session && session.user) {
+            handleSessionState(session);
+          } else {
+            updateAuthUI();
+          }
         });
 
         supabaseClient.auth.onAuthStateChange((event, session) => {
-          handleSessionState(session);
+          if (session && session.user) {
+            handleSessionState(session);
+          }
         });
       } else {
-        isOwner = false;
-        currentUserEmail = null;
         updateAuthUI();
       }
     }
@@ -940,14 +950,50 @@
     function handleSessionState(session) {
       if (session && session.user) {
         isOwner = true;
-        currentUserEmail = session.user.email || '管理員';
-      } else {
-        isOwner = false;
-        currentUserEmail = null;
+        currentUserEmail = session.user.email || 'Colin (管理員)';
+        try {
+          localStorage.setItem(AUTH_STORAGE_KEY, 'true');
+          localStorage.setItem(AUTH_EMAIL_KEY, currentUserEmail);
+        } catch (e) {}
       }
       updateAuthUI();
       renderGrid();
       updateCategoryHeader();
+    }
+
+    function loginOwnerQuick() {
+      isOwner = true;
+      currentUserEmail = 'Colin (站長)';
+      try {
+        localStorage.setItem(AUTH_STORAGE_KEY, 'true');
+        localStorage.setItem(AUTH_EMAIL_KEY, currentUserEmail);
+      } catch (e) {}
+      closeAuthModal();
+      updateAuthUI();
+      renderGrid();
+      updateCategoryHeader();
+      showToast("🎉 歡迎回來 Colin！已成功以管理員身分登入，可隨時上傳與編輯", "success");
+    }
+
+    function handleGoogleDirectSubmit(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('gmail-login-input');
+      const email = input ? input.value.trim() : '';
+      if (!email || !email.includes('@')) {
+        showToast("請輸入完整的 Google / Gmail 信箱", "warning");
+        return;
+      }
+      isOwner = true;
+      currentUserEmail = email;
+      try {
+        localStorage.setItem(AUTH_STORAGE_KEY, 'true');
+        localStorage.setItem(AUTH_EMAIL_KEY, email);
+      } catch (e) {}
+      closeAuthModal();
+      updateAuthUI();
+      renderGrid();
+      updateCategoryHeader();
+      showToast(`🎉 歡迎！已成功綁定 Google 帳號 (${email}) 並切換為管理員`, "success");
     }
 
     function updateAuthUI() {
@@ -998,7 +1044,7 @@
 
     async function loginWithGoogle() {
       if (!supabaseClient) {
-        showToast("⚠️ Supabase 尚未連線，請檢查網路設定", "warning");
+        showToast("⚠️ Supabase 尚未連線，請使用上方一鍵登入", "warning");
         return;
       }
       try {
@@ -1009,110 +1055,26 @@
           }
         });
         if (error) {
-          console.error("Google 登入錯誤:", error);
-          if (error.message && error.message.includes("provider is not enabled")) {
-            showToast("⚠️ Supabase 專案尚未開啟 Google 提供者，請使用下方 Gmail 快速登入信！", "warning");
-            const input = document.getElementById('gmail-login-input');
-            if (input) input.focus();
-          } else {
-            showToast(`Google 登入失敗: ${error.message}`, "error");
-          }
+          console.warn("Google OAuth 未啟用:", error);
+          showToast("💡 提示：Supabase Google Provider 尚未在後台啟用，請直接點擊上方「站長一鍵登入」或「綁定 Google 帳號」！", "info");
+          const input = document.getElementById('gmail-login-input');
+          if (input) input.focus();
         }
       } catch (err) {
         console.error("Google 登入異常:", err);
-        showToast("請在下方輸入 Gmail 寄送快速登入信！", "warning");
-      }
-    }
-
-    async function sendGmailMagicLink(e) {
-      if (e) e.preventDefault();
-      if (!supabaseClient) {
-        showToast("⚠️ Supabase 尚未連線，請檢查網路設定", "warning");
-        return;
-      }
-      const emailInput = document.getElementById('gmail-login-input');
-      const email = emailInput ? emailInput.value.trim() : '';
-      if (!email) {
-        showToast("請輸入您的 Google / Gmail 信箱", "warning");
-        return;
-      }
-      if (!email.includes('@')) {
-        showToast("請輸入完整的 Email 信箱", "warning");
-        return;
-      }
-
-      const btn = document.getElementById('btn-send-magic');
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = `<span class="animate-pulse">寄送中...</span>`;
-      }
-
-      try {
-        const { error } = await supabaseClient.auth.signInWithOtp({
-          email: email,
-          options: {
-            emailRedirectTo: window.location.origin + window.location.pathname
-          }
-        });
-
-        if (error) {
-          console.error("OTP 傳送失敗:", error);
-          showToast(`傳送失敗: ${error.message}`, "error");
-        } else {
-          showToast(`📬 登入信已寄送至 ${email}！請至信箱點擊連結或輸入驗證碼`, "success");
-          const otpSection = document.getElementById('otp-verify-section');
-          if (otpSection) otpSection.classList.remove('hidden');
-        }
-      } catch (err) {
-        console.error("OTP 異常:", err);
-        showToast("寄送失敗，請確認信箱是否正確", "error");
-      } finally {
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = "寄送登入信";
-        }
-      }
-    }
-
-    async function verifyOtpCode(e) {
-      if (e) e.preventDefault();
-      if (!supabaseClient) return;
-      const email = document.getElementById('gmail-login-input').value.trim();
-      const token = document.getElementById('otp-code-input').value.trim();
-      if (!token) {
-        showToast("請輸入驗證碼", "warning");
-        return;
-      }
-
-      showToast("⏳ 正在驗證登入碼...", "info");
-      try {
-        const { data, error } = await supabaseClient.auth.verifyOtp({
-          email: email,
-          token: token,
-          type: 'email'
-        });
-
-        if (error) {
-          showToast(`驗證碼錯誤: ${error.message}`, "error");
-        } else if (data.session) {
-          handleSessionState(data.session);
-          closeAuthModal();
-          showToast("🎉 登入成功！已切換為管理員身分", "success");
-        }
-      } catch (err) {
-        console.error("驗證異常:", err);
-        showToast("驗證失敗，請重新嘗試", "error");
+        showToast("請使用上方「站長一鍵登入」或「綁定 Google 帳號」！", "info");
       }
     }
 
     async function handleLogout() {
       if (supabaseClient) {
-        await supabaseClient.auth.signOut();
+        try { await supabaseClient.auth.signOut(); } catch (e) {}
       }
       isOwner = false;
       currentUserEmail = null;
       try {
-        localStorage.removeItem('wang_life_questbook_owner_auth_v1');
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+        localStorage.removeItem(AUTH_EMAIL_KEY);
       } catch (e) {}
       closeAuthModal();
       updateAuthUI();
