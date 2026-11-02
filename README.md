@@ -1,8 +1,6 @@
-# Wang's Life Questbook | 100 Challenge
+# 100 Challenge
 
-> 「不為除錯，只為體驗。紀錄下半場生命的每一個精彩瞬間。」
-
-一個專為個人人生里程碑打造的單頁 Web 應用程式（Single Page App），以獨立開發者極簡暗黑 Dashboard 風格呈現，幫助你用 100 宮格點亮生命的 6 大探險挑戰。
+一個專為個人人生里程碑打造的單頁 Web 應用程式（Single Page App），以極簡科技儀表板風格呈現，幫助你用 100 宮格點亮生命的 6 大探險挑戰。
 
 ---
 

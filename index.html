@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Wang's Life Questbook | 100 Challenge</title>
-  <meta name="description" content="不為除錯，只為體驗。紀錄下半場生命的每一個精彩瞬間。100 Challenge 單頁挑戰應用程式。">
+  <title>100 Challenge</title>
+  <meta name="description" content="100 Challenge 挑戰手札單頁應用程式。">
   
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
@@ -152,44 +152,48 @@
 <body class="bg-slate-50 dark:bg-[#09090B] text-slate-900 dark:text-slate-100 font-sans min-h-screen bg-grid-pattern antialiased selection:bg-gold-500/30 selection:text-gold-500 transition-colors duration-300">
 
   <!-- Main Container -->
-  <div class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-5 sm:py-10 pb-32">
+  <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-8 pb-16">
 
     <!-- TOP NAV: BRAND, STATUS, AUTH, THEME TOGGLE -->
-    <header class="mb-6 sm:mb-8">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5 pb-5 border-b border-slate-200 dark:border-slate-800/80">
+    <header class="mb-3.5 sm:mb-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800/80">
         
-        <!-- Left: Title & Subtitle -->
-        <div>
-          <div class="flex flex-wrap items-center gap-2.5 mb-2">
-            <span class="inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-gold-500/20 to-emerald-500/20 border border-gold-500/30 text-xl sm:text-2xl shadow-glow-gold">
+        <!-- Left: Brand Title & Cloud Status -->
+        <div class="flex items-center justify-between sm:justify-start gap-2.5">
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gold-500/20 to-emerald-500/20 border border-gold-500/30 text-lg sm:text-2xl shadow-glow-gold">
               🎯
             </span>
-            <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-slate-100 dark:via-slate-200 dark:to-slate-400">
-              Wang's Life Questbook
-            </h1>
-            <span class="hidden sm:inline-block px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider rounded-full bg-gold-500/10 text-gold-600 dark:text-gold-400 border border-gold-500/30">
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-slate-100 dark:via-slate-200 dark:to-slate-400">
               100 Challenge
-            </span>
-            <!-- Cloud Connection Badge -->
-            <span id="cloud-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700 transition">
-              <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-              <span class="hidden sm:inline">連線中...</span>
-            </span>
+            </h1>
           </div>
-          <p class="text-xs sm:text-sm md:text-base text-slate-500 dark:text-slate-400 font-normal leading-relaxed">
-            <span class="text-gold-500">「</span>不為除錯，只為體驗。紀錄下半場生命的每一個精彩瞬間。<span class="text-gold-500">」</span>
-          </p>
+          <!-- Cloud Connection Badge -->
+          <span id="cloud-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-semibold rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700 transition">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+            <span>連線中...</span>
+          </span>
         </div>
 
-        <!-- Right: Auth Capsule, Theme Toggle, Progress Capsule -->
-        <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
+        <!-- Right: Auth Capsule, Theme Toggle, Progress Capsule, Backup Controls -->
+        <div class="flex items-center justify-between sm:justify-end gap-2 sm:gap-2.5 flex-wrap">
           
           <!-- Auth Badge / Button (Only owner can write) -->
           <div id="auth-pill-container">
-            <button onclick="openAuthModal()" id="auth-btn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition border shadow-sm bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-gold-500/60">
+            <button onclick="openAuthModal()" id="auth-btn" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition border shadow-sm bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-gold-500/60">
               <i data-lucide="shield" class="w-3.5 h-3.5 text-slate-400"></i>
               <span id="auth-status-text">訪客模式 (登入)</span>
             </button>
+          </div>
+
+          <!-- Total Progress Capsule -->
+          <div class="bg-white dark:bg-brand-surface border border-slate-200 dark:border-slate-800 rounded-xl px-2.5 py-1.5 sm:px-3 flex items-center gap-2 shadow-sm backdrop-blur">
+            <div class="flex items-baseline gap-1">
+              <span id="global-unlocked-count" class="font-mono text-base sm:text-xl font-bold text-gold-500">0</span>
+              <span class="text-slate-400 font-mono text-xs">/ 600</span>
+              <span id="global-unlocked-percent" class="text-xs font-bold text-emerald-600 dark:text-emerald-400">(0%)</span>
+            </div>
+            <span class="text-gold-500 text-sm">🏆</span>
           </div>
 
           <!-- Theme Toggle Button (Light / Dark) -->
@@ -199,28 +203,13 @@
             <i data-lucide="moon" id="theme-icon-moon" class="w-4 h-4 inline dark:hidden"></i>
           </button>
 
-          <!-- Total Progress Capsule -->
-          <div class="bg-white dark:bg-brand-surface border border-slate-200 dark:border-slate-800 rounded-2xl p-2.5 sm:px-4 flex items-center gap-3 shadow-sm dark:shadow-lg backdrop-blur">
-            <div>
-              <div class="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-semibold">總解鎖 Total</div>
-              <div class="flex items-baseline gap-1.5">
-                <span id="global-unlocked-count" class="font-mono text-xl sm:text-2xl font-bold text-gold-500">0</span>
-                <span class="text-slate-400 font-mono text-xs sm:text-sm">/ 600</span>
-                <span id="global-unlocked-percent" class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">(0%)</span>
-              </div>
-            </div>
-            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 flex items-center justify-center text-gold-500">
-              <i data-lucide="trophy" class="w-5 h-5"></i>
-            </div>
-          </div>
-
           <!-- Backup / Management Controls (Shown for Owner) -->
-          <div class="flex items-center gap-1.5">
-            <button id="btn-export-json" onclick="exportData()" title="匯出資料備份 (JSON)" class="p-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 transition shadow-sm">
-              <i data-lucide="download" class="w-4 h-4"></i>
+          <div class="flex items-center gap-1">
+            <button id="btn-export-json" onclick="exportData()" title="匯出資料備份 (JSON)" class="p-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 transition shadow-sm">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
             </button>
-            <button id="btn-sample-data" onclick="loadSampleData()" title="載入精選示範資料" class="p-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-medium text-gold-500 transition shadow-sm">
-              <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <button id="btn-sample-data" onclick="loadSampleData()" title="載入精選示範資料" class="p-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-medium text-gold-500 transition shadow-sm">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
             </button>
           </div>
 
@@ -228,54 +217,54 @@
       </div>
 
       <!-- Global Linear Progress Bar -->
-      <div class="w-full bg-slate-200 dark:bg-slate-900 h-2 rounded-full mt-3 overflow-hidden border border-slate-300/60 dark:border-slate-800/80">
+      <div class="w-full bg-slate-200 dark:bg-slate-900 h-1.5 rounded-full mt-2 overflow-hidden border border-slate-300/60 dark:border-slate-800/80">
         <div id="global-progress-bar" class="h-full bg-gradient-to-r from-gold-500 via-amber-400 to-emerald-400 transition-all duration-700 ease-out rounded-full" style="width: 0%"></div>
       </div>
     </header>
 
     <!-- TAB NAVIGATION (6 Categories) -->
-    <div class="mb-5 sm:mb-6">
-      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 sm:pb-0" id="tabs-container">
+    <div class="mb-3.5 sm:mb-5">
+      <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pb-1 sm:pb-0" id="tabs-container">
         <!-- Generated by JavaScript: 6 tabs -->
       </div>
     </div>
 
     <!-- CATEGORY OVERVIEW & TOOLBAR -->
-    <section class="bg-white dark:bg-brand-surface/70 border border-slate-200 dark:border-slate-800/90 rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-sm dark:shadow-md backdrop-blur-md transition-colors">
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <section class="bg-white dark:bg-brand-surface/70 border border-slate-200 dark:border-slate-800/90 rounded-2xl p-3.5 sm:p-5 mb-3.5 sm:mb-6 shadow-sm dark:shadow-md backdrop-blur-md transition-colors">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
         
         <!-- Category Info -->
         <div>
-          <div class="flex items-center gap-2.5 mb-1.5">
+          <div class="flex items-center gap-2 mb-1">
             <span id="category-badge-icon" class="text-2xl sm:text-3xl">⚽</span>
             <h2 id="category-title" class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">父子 100 場球</h2>
-            <span id="category-progress-badge" class="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-gold-600 dark:text-gold-400 border border-slate-200 dark:border-slate-700">
+            <span id="category-progress-badge" class="font-mono text-xs sm:text-sm font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-gold-600 dark:text-gold-400 border border-slate-200 dark:border-slate-700">
               0 / 100
             </span>
           </div>
-          <p id="category-desc" class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+          <p id="category-desc" class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-normal">
             一起流汗、互相傳球，父子間無話不談的綠茵與籃球時光。
           </p>
         </div>
 
         <!-- Filter & Layout Toolbar -->
-        <div class="flex flex-wrap items-center gap-2 sm:gap-2.5">
+        <div class="flex flex-wrap items-center gap-2">
           
           <!-- Mobile Layout Mode Switcher (Large Cards vs Matrix) -->
-          <div class="inline-flex p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-semibold">
+          <div class="inline-flex p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm font-bold">
             <button onclick="setLayoutMode('cards')" id="layout-btn-cards" title="適合手機閱讀的卡片大圖模式" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm">
-              <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+              <i data-lucide="layout-grid" class="w-4 h-4"></i>
               <span>清晰卡片</span>
             </button>
             <button onclick="setLayoutMode('matrix')" id="layout-btn-matrix" title="完整 100 宮格鳥瞰模式" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
-              <i data-lucide="grid-3x3" class="w-3.5 h-3.5"></i>
+              <i data-lucide="grid-3x3" class="w-4 h-4"></i>
               <span>100 矩陣</span>
             </button>
           </div>
 
           <!-- Status Filter: All / Unlocked / Locked -->
-          <div class="inline-flex p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-medium">
-            <button onclick="setFilter('all')" id="filter-btn-all" class="px-2.5 sm:px-3 py-1.5 rounded-lg transition bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-semibold">
+          <div class="inline-flex p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm font-semibold">
+            <button onclick="setFilter('all')" id="filter-btn-all" class="px-2.5 sm:px-3 py-1.5 rounded-lg transition bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-bold">
               全部
             </button>
             <button onclick="setFilter('unlocked')" id="filter-btn-unlocked" class="px-2.5 sm:px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
@@ -287,39 +276,39 @@
           </div>
 
           <!-- Search Input -->
-          <div class="relative w-full sm:w-44">
-            <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <div class="relative w-full sm:w-48">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
             <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="搜尋標題或隨筆..." 
-              class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-8 pr-3 py-2 text-xs sm:text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-gold-500 transition">
+              class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-sm text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-gold-500 transition">
           </div>
         </div>
       </div>
 
       <!-- Owner Only: 100 道下酒菜清單專屬維護入口 (僅在管理員登入且為下酒菜類別時顯示) -->
-      <div id="dish-planner-entry" class="hidden mt-4 pt-3.5 border-t border-slate-200 dark:border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gold-500/5 dark:bg-gold-500/10 p-3 sm:p-3.5 rounded-2xl border border-gold-500/20">
+      <div id="dish-planner-entry" class="hidden mt-3.5 pt-3 border-t border-slate-200 dark:border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gold-500/5 dark:bg-gold-500/10 p-3 sm:p-3.5 rounded-2xl border border-gold-500/20">
         <div class="flex items-center gap-3">
           <span class="p-2 rounded-xl bg-gold-500/20 text-gold-500 shrink-0">
             <i data-lucide="chef-hat" class="w-5 h-5"></i>
           </span>
           <div>
             <div class="flex items-center gap-2">
-              <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">100 道下酒菜・私房菜單備忘庫</span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gold-500 text-slate-950">管理員專用</span>
+              <span class="text-sm font-bold text-slate-900 dark:text-white">100 道下酒菜・私房菜單備忘庫</span>
+              <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-gold-500 text-slate-950">管理員專用</span>
             </div>
-            <p id="dish-planner-summary-text" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            <p id="dish-planner-summary-text" class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
               已規劃 20 道菜單，其中 1 道已烹調解鎖、19 道待料理
             </p>
           </div>
         </div>
-        <button onclick="openDishPlannerModal()" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-gold-500 hover:bg-gold-600 text-slate-950 font-bold text-xs transition shadow-sm hover:scale-[1.02] shrink-0">
+        <button onclick="openDishPlannerModal()" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-gold-500 hover:bg-gold-600 text-slate-950 font-bold text-xs sm:text-sm transition shadow-sm hover:scale-[1.02] shrink-0">
           <i data-lucide="book-open" class="w-4 h-4"></i>
           <span>維護 100 道下酒菜清單</span>
         </button>
       </div>
 
       <!-- Specific Tag Filters (shown especially for ⛰️ 步道與遠征) -->
-      <div id="trail-tag-filters" class="hidden mt-4 pt-3 border-t border-slate-200 dark:border-slate-800/60 flex items-center flex-wrap gap-1.5 text-xs">
-        <span class="text-slate-500 dark:text-slate-400 mr-1 text-[11px] uppercase tracking-wider font-semibold">熱門標籤：</span>
+      <div id="trail-tag-filters" class="hidden mt-3.5 pt-3 border-t border-slate-200 dark:border-slate-800/60 flex items-center flex-wrap gap-1.5 text-xs sm:text-sm">
+        <span class="text-slate-500 dark:text-slate-400 mr-1 text-xs uppercase tracking-wider font-semibold">熱門標籤：</span>
         <button onclick="filterByTag('all')" class="tag-filter-btn px-2.5 py-1 rounded-lg bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 font-medium" data-tag="all">全部標籤</button>
         <button onclick="filterByTag('玉山')" class="tag-filter-btn px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800" data-tag="玉山">🏔️ 玉山</button>
         <button onclick="filterByTag('日本爬山')" class="tag-filter-btn px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800" data-tag="日本爬山">🇯🇵 日本爬山</button>
@@ -329,7 +318,7 @@
       </div>
 
       <!-- Category Mini Progress Bar -->
-      <div class="w-full bg-slate-200 dark:bg-slate-900/90 h-1.5 rounded-full mt-4 overflow-hidden border border-slate-300/40 dark:border-slate-800/60">
+      <div class="w-full bg-slate-200 dark:bg-slate-900/90 h-1.5 rounded-full mt-3.5 overflow-hidden border border-slate-300/40 dark:border-slate-800/60">
         <div id="category-progress-bar" class="h-full bg-gold-500 transition-all duration-500 rounded-full" style="width: 0%"></div>
       </div>
     </section>
@@ -337,26 +326,26 @@
     <!-- 100-GRID MATRIX / CARDS (主體顯示區) -->
     <main>
       <!-- Grid container dynamically styled for layout modes -->
-      <div id="grid-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-3 sm:gap-3.5">
+      <div id="grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4">
         <!-- 100 Cards dynamically generated by renderGrid() -->
       </div>
       
       <!-- Empty Search State -->
-      <div id="empty-search-state" class="hidden py-16 text-center">
-        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 mb-3">
-          <i data-lucide="inbox" class="w-7 h-7"></i>
+      <div id="empty-search-state" class="hidden py-12 text-center">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 mb-2.5">
+          <i data-lucide="inbox" class="w-6 h-6"></i>
         </div>
-        <h3 class="text-base font-semibold text-slate-700 dark:text-slate-300">沒有符合條件的卡片</h3>
-        <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">請嘗試變更搜尋關鍵字或切換篩選標籤。</p>
+        <h3 class="text-base font-bold text-slate-700 dark:text-slate-300">沒有符合條件的卡片</h3>
+        <p class="text-xs sm:text-sm text-slate-400 dark:text-slate-500 mt-1">請嘗試變更搜尋關鍵字或切換篩選標籤。</p>
       </div>
     </main>
 
   </div><!-- End Main Container -->
 
   <!-- FLOATING ACTION BUTTON (FAB) - ONLY SHOWN FOR OWNER -->
-  <aside id="fab-container" class="fixed bottom-6 right-5 sm:right-6 z-40">
+  <aside id="fab-container" class="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-40">
     <button onclick="openUnlockModal()" id="fab-unlock-btn" 
-      class="group relative flex items-center gap-2 px-5 py-3.5 sm:py-4 rounded-full bg-gradient-to-r from-gold-500 via-amber-500 to-emerald-500 text-slate-950 font-extrabold text-sm sm:text-base shadow-xl shadow-gold-500/25 hover:shadow-gold-500/40 hover:scale-105 active:scale-95 transition-all duration-200">
+      class="group relative flex items-center gap-2 px-4 py-3 sm:px-5 sm:py-3.5 rounded-full bg-gradient-to-r from-gold-500 via-amber-500 to-emerald-500 text-slate-950 font-extrabold text-sm sm:text-base shadow-xl shadow-gold-500/25 hover:shadow-gold-500/40 hover:scale-105 active:scale-95 transition-all duration-200">
       <i data-lucide="plus" class="w-5 h-5 transition-transform duration-200 group-hover:rotate-90"></i>
       <span>解鎖新卡片</span>
       <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5">
@@ -366,28 +355,30 @@
     </button>
   </aside>
 
-  <!-- MODAL: AUTH / OWNER LOGIN (Google OAuth Only) -->
+  <!-- MODAL: AUTH / OWNER LOGIN (Google OAuth + Gmail Magic Link) -->
   <div id="auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
-    <div class="bg-white dark:bg-brand-surface border border-slate-200 dark:border-slate-700/80 w-full max-w-md rounded-3xl p-6 shadow-2xl modal-enter relative my-auto">
+    <div class="bg-white dark:bg-brand-surface border border-slate-200 dark:border-slate-700/80 w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl modal-enter relative my-auto">
       
       <!-- Close Button -->
-      <button onclick="closeAuthModal()" class="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 sm:top-5 sm:right-5 p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
-      <div class="text-center mb-6">
-        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gold-500/10 text-gold-500 border border-gold-500/30 text-2xl mb-3">
+      <div class="text-center mb-5">
+        <div class="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gold-500/10 text-gold-500 border border-gold-500/30 text-2xl mb-2.5">
           👑
         </div>
-        <h3 class="text-xl font-bold text-slate-900 dark:text-white">擁有者身分驗證</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          本手札公開供親友讀取瀏覽，管理員請使用 Google 帳號登入解鎖與維護
+        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">管理員身分登入</h3>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          訪客可公開唯讀瀏覽，管理員登入後可上傳解鎖與編輯
         </p>
       </div>
 
-      <!-- State A: 未登入 (顯示 Google 登入按鈕) -->
+      <!-- State A: 未登入 (提供 Google 一鍵登入 + Gmail 快速登入信) -->
       <div id="auth-logged-out-view" class="space-y-4">
-        <button onclick="loginWithGoogle()" class="w-full py-3.5 px-4 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-white text-sm font-bold flex items-center justify-center gap-3 shadow-md hover:shadow-lg transition-all hover:scale-[1.01]">
+        
+        <!-- Option 1: Google OAuth Direct -->
+        <button onclick="loginWithGoogle()" class="w-full py-3 sm:py-3.5 px-4 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-white text-sm sm:text-base font-bold flex items-center justify-center gap-3 shadow-md hover:shadow-lg transition-all hover:scale-[1.01]">
           <!-- Google G Logo SVG -->
           <svg class="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -398,16 +389,55 @@
           <span>使用 Google 帳號一鍵登入</span>
         </button>
 
+        <div class="relative flex items-center justify-center py-1">
+          <div class="border-t border-slate-200 dark:border-slate-800 w-full"></div>
+          <span class="bg-white dark:bg-brand-surface px-3 text-xs text-slate-400 font-semibold whitespace-nowrap">或使用 Gmail 快速登入</span>
+        </div>
+
+        <!-- Option 2: Gmail Magic Link / OTP -->
+        <form onsubmit="sendGmailMagicLink(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              輸入您的 Google / Gmail 信箱：
+            </label>
+            <div class="flex gap-2">
+              <input type="email" id="gmail-login-input" placeholder="example@gmail.com" required
+                class="flex-1 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm sm:text-base text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-gold-500">
+              <button type="submit" id="btn-send-magic" class="px-4 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-600 text-slate-950 font-bold text-xs sm:text-sm transition shrink-0 shadow-sm">
+                寄送登入信
+              </button>
+            </div>
+            <p class="text-[11px] sm:text-xs text-slate-400 mt-1">
+              ✨ 免密碼、免 GCP 設定，點擊信箱連結或輸入 6 位驗證碼即可自動登入！
+            </p>
+          </div>
+        </form>
+
+        <!-- OTP Code Input (Revealed after sending or toggle) -->
+        <div id="otp-verify-section" class="hidden p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 space-y-2">
+          <label class="block text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
+            請輸入信件中的 6 位數登入驗證碼：
+          </label>
+          <div class="flex gap-2">
+            <input type="text" id="otp-code-input" placeholder="例如: 123456" maxlength="8"
+              class="flex-1 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm sm:text-base text-slate-900 dark:text-slate-200 tracking-widest font-mono text-center focus:outline-none focus:border-gold-500">
+            <button type="button" onclick="verifyOtpCode(event)" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm transition shrink-0 shadow-sm">
+              驗證登入
+            </button>
+          </div>
+        </div>
+
         <!-- Google OAuth 提示卡片 -->
-        <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2.5">
+        <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs sm:text-sm text-amber-800 dark:text-amber-300 flex items-start gap-2.5">
           <i data-lucide="info" class="w-4 h-4 shrink-0 mt-0.5 text-amber-500"></i>
-          <div class="leading-relaxed">
-            <span class="font-bold">Google 登入權限提示：</span>
+          <div class="leading-relaxed text-xs">
+            <span class="font-bold">Google 一鍵登入若提示錯誤：</span>
             <p class="mt-0.5 text-slate-600 dark:text-slate-300">
-              透過 Google 帳號驗證後，將自動開啟全站上傳、編輯、拍照解鎖與 100 道下酒菜專屬維護功能。未登入者僅供唯讀瀏覽。
+              若點擊上方 Google 顯示「provider is not enabled」，代表 Supabase 後台尚未啟用 Google OAuth 提供者。請直接在上方輸入您的 Gmail 寄送登入信，無須設定即可立即登入！
             </p>
           </div>
         </div>
+
       </div>
 
       <!-- State B: 已登入 (顯示管理員身分資訊與登出按鈕) -->
@@ -418,16 +448,16 @@
           </div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
-              <span class="text-sm font-bold text-slate-900 dark:text-white">管理員身分已授權</span>
+              <span class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">管理員身分已授權</span>
               <span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">Google</span>
             </div>
-            <p id="auth-user-email-display" class="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5 font-mono">user@gmail.com</p>
+            <p id="auth-user-email-display" class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 truncate mt-0.5 font-mono">user@gmail.com</p>
           </div>
         </div>
 
-        <button onclick="handleLogout()" class="w-full py-3 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold transition border border-red-500/20 flex items-center justify-center gap-2">
+        <button onclick="handleLogout()" class="w-full py-3 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs sm:text-sm font-bold transition border border-red-500/20 flex items-center justify-center gap-2">
           <i data-lucide="log-out" class="w-4 h-4"></i>
-          <span>登出 Google 帳號（切換為訪客唯讀狀態）</span>
+          <span>登出管理員身分（切換為訪客唯讀狀態）</span>
         </button>
       </div>
 
@@ -980,11 +1010,98 @@
         });
         if (error) {
           console.error("Google 登入錯誤:", error);
-          showToast(`Google 登入失敗: ${error.message}（請確認 Supabase 後台已啟用 Google 提供者）`, "error");
+          if (error.message && error.message.includes("provider is not enabled")) {
+            showToast("⚠️ Supabase 專案尚未開啟 Google 提供者，請使用下方 Gmail 快速登入信！", "warning");
+            const input = document.getElementById('gmail-login-input');
+            if (input) input.focus();
+          } else {
+            showToast(`Google 登入失敗: ${error.message}`, "error");
+          }
         }
       } catch (err) {
         console.error("Google 登入異常:", err);
-        showToast("請確認 Supabase 後台 Authentication ➜ Providers 已啟用 Google", "error");
+        showToast("請在下方輸入 Gmail 寄送快速登入信！", "warning");
+      }
+    }
+
+    async function sendGmailMagicLink(e) {
+      if (e) e.preventDefault();
+      if (!supabaseClient) {
+        showToast("⚠️ Supabase 尚未連線，請檢查網路設定", "warning");
+        return;
+      }
+      const emailInput = document.getElementById('gmail-login-input');
+      const email = emailInput ? emailInput.value.trim() : '';
+      if (!email) {
+        showToast("請輸入您的 Google / Gmail 信箱", "warning");
+        return;
+      }
+      if (!email.includes('@')) {
+        showToast("請輸入完整的 Email 信箱", "warning");
+        return;
+      }
+
+      const btn = document.getElementById('btn-send-magic');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="animate-pulse">寄送中...</span>`;
+      }
+
+      try {
+        const { error } = await supabaseClient.auth.signInWithOtp({
+          email: email,
+          options: {
+            emailRedirectTo: window.location.origin + window.location.pathname
+          }
+        });
+
+        if (error) {
+          console.error("OTP 傳送失敗:", error);
+          showToast(`傳送失敗: ${error.message}`, "error");
+        } else {
+          showToast(`📬 登入信已寄送至 ${email}！請至信箱點擊連結或輸入驗證碼`, "success");
+          const otpSection = document.getElementById('otp-verify-section');
+          if (otpSection) otpSection.classList.remove('hidden');
+        }
+      } catch (err) {
+        console.error("OTP 異常:", err);
+        showToast("寄送失敗，請確認信箱是否正確", "error");
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "寄送登入信";
+        }
+      }
+    }
+
+    async function verifyOtpCode(e) {
+      if (e) e.preventDefault();
+      if (!supabaseClient) return;
+      const email = document.getElementById('gmail-login-input').value.trim();
+      const token = document.getElementById('otp-code-input').value.trim();
+      if (!token) {
+        showToast("請輸入驗證碼", "warning");
+        return;
+      }
+
+      showToast("⏳ 正在驗證登入碼...", "info");
+      try {
+        const { data, error } = await supabaseClient.auth.verifyOtp({
+          email: email,
+          token: token,
+          type: 'email'
+        });
+
+        if (error) {
+          showToast(`驗證碼錯誤: ${error.message}`, "error");
+        } else if (data.session) {
+          handleSessionState(data.session);
+          closeAuthModal();
+          showToast("🎉 登入成功！已切換為管理員身分", "success");
+        }
+      } catch (err) {
+        console.error("驗證異常:", err);
+        showToast("驗證失敗，請重新嘗試", "error");
       }
     }
 
@@ -1319,15 +1436,15 @@
       const container = document.getElementById('grid-container');
 
       if (currentLayoutMode === 'cards') {
-        btnCards.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-semibold";
-        btnMatrix.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
-        // 2 cols on mobile for great readability, up to 6 on desktop
-        container.className = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4";
+        btnCards.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-bold text-xs sm:text-sm";
+        btnMatrix.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition text-xs sm:text-sm";
+        // 1 column on phone (full readable card feed), 2 on tablet, 3-4 on desktop
+        container.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4";
       } else {
-        btnMatrix.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-semibold";
-        btnCards.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
-        // Dense 100-matrix: 4 cols on mobile, 10 on desktop
-        container.className = "grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-2 sm:gap-3";
+        btnMatrix.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-bold text-xs sm:text-sm";
+        btnCards.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition text-xs sm:text-sm";
+        // 5 columns on phone (5x20 compact), 10 on desktop
+        container.className = "grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-1.5 sm:gap-2.5";
       }
     }
 
@@ -1497,18 +1614,18 @@
 
         const btn = document.createElement('button');
         btn.onclick = () => switchCategory(cat.id);
-        btn.className = `flex items-center gap-2 px-3.5 py-2.5 rounded-2xl font-semibold text-xs sm:text-sm whitespace-nowrap transition-all duration-200 border ${
+        btn.className = `flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base whitespace-nowrap transition-all duration-200 border ${
           isActive 
             ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white border-gold-500 shadow-md shadow-gold-500/10' 
             : 'bg-white/60 dark:bg-brand-surface/80 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border-slate-200 dark:border-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800/50'
         }`;
 
         btn.innerHTML = `
-          <span class="text-base sm:text-lg">${cat.icon}</span>
+          <span class="text-lg sm:text-xl">${cat.icon}</span>
           <span>${cat.title}</span>
-          <span class="font-mono text-xs px-2 py-0.5 rounded-full ${
+          <span class="font-mono text-xs px-2 py-0.5 rounded-full font-bold ${
             unlockedCount > 0 
-              ? 'bg-gold-500/15 text-gold-600 dark:text-gold-400 border border-gold-500/30 font-bold' 
+              ? 'bg-gold-500/15 text-gold-600 dark:text-gold-400 border border-gold-500/30' 
               : 'bg-slate-200 dark:bg-slate-900 text-slate-500 border border-slate-300 dark:border-slate-800'
           }">
             ${unlockedCount}
@@ -1623,54 +1740,54 @@
 
           if (isCardMode) {
             // === LARGE CARD MODE (Mobile-First High Readability) ===
-            card.className = `group relative rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer bg-white dark:bg-slate-900 border-2 border-gold-400 dark:border-gold-500/50 hover:border-gold-500 transition-all duration-300 shadow-md hover:shadow-glow-card flex flex-col ${
+            card.className = `group relative rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer bg-white dark:bg-slate-900 border-2 border-gold-400/80 dark:border-gold-500/50 hover:border-gold-500 transition-all duration-300 shadow-md hover:shadow-glow-card flex flex-col ${
               isTargetHighlight ? 'animate-unlock z-10' : ''
             }`;
 
             const photoSrc = item.photo || '';
             card.innerHTML = `
               <!-- Thumbnail Photo -->
-              <div class="relative w-full aspect-[4/3] bg-slate-200 dark:bg-slate-950 overflow-hidden">
+              <div class="relative w-full aspect-[16/10] sm:aspect-[4/3] bg-slate-200 dark:bg-slate-950 overflow-hidden">
                 ${photoSrc 
                   ? `<img src="${photoSrc}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">`
-                  : `<div class="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center text-gold-500"><i data-lucide="award" class="w-8 h-8"></i></div>`
+                  : `<div class="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center text-gold-500"><i data-lucide="award" class="w-10 h-10"></i></div>`
                 }
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
                 
                 <!-- Badge Top Left -->
                 <div class="absolute top-2.5 left-2.5">
-                  <span class="font-mono text-xs font-black px-2.5 py-0.5 rounded-full bg-black/75 text-gold-400 border border-gold-500/50 backdrop-blur shadow-sm">
+                  <span class="font-mono text-xs sm:text-sm font-black px-2.5 py-0.5 rounded-full bg-black/75 text-gold-400 border border-gold-500/50 backdrop-blur shadow-sm">
                     #${numStr}
                   </span>
                 </div>
                 
                 <!-- Date Bottom Right -->
-                <div class="absolute bottom-2 right-2.5 font-mono text-[11px] text-white/90 drop-shadow-md">
-                  ${item.date ? item.date.slice(5) : ''}
+                <div class="absolute bottom-2 right-2.5 font-mono text-xs text-white/95 drop-shadow-md font-semibold">
+                  ${item.date ? item.date : ''}
                 </div>
               </div>
 
               <!-- Content Body -->
-              <div class="p-3 sm:p-3.5 flex flex-col justify-between flex-1">
+              <div class="p-3.5 sm:p-4 flex flex-col justify-between flex-1 gap-2">
                 <div>
-                  <h4 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white line-clamp-2 leading-snug group-hover:text-gold-500 transition">
+                  <h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white line-clamp-2 leading-snug group-hover:text-gold-500 transition">
                     ${item.title || '無標題'}
                   </h4>
                   ${item.notes ? `
-                    <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-1 italic">
+                    <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 line-clamp-3 mt-1.5 leading-relaxed italic">
                       "${item.notes}"
                     </p>
                   ` : ''}
                 </div>
                 ${item.tags && item.tags.length > 0 ? `
-                  <div class="flex flex-wrap gap-1 mt-2">
-                    ${item.tags.slice(0, 2).map(t => `<span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-gold-400 border border-slate-200 dark:border-slate-700">#${t}</span>`).join('')}
+                  <div class="flex flex-wrap gap-1 mt-1">
+                    ${item.tags.map(t => `<span class="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-gold-400 border border-slate-200 dark:border-slate-700">#${t}</span>`).join('')}
                   </div>
                 ` : ''}
               </div>
             `;
           } else {
-            // === DENSE MATRIX MODE (Classic 10x10 Matrix) ===
+            // === DENSE MATRIX MODE (5x20 on mobile, 10x10 on desktop) ===
             card.className = `group relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer bg-white dark:bg-slate-900 border border-gold-400 dark:border-gold-500/40 hover:border-gold-500 transition-all duration-300 shadow-sm dark:shadow-md hover:shadow-glow-card ${
               isTargetHighlight ? 'animate-unlock z-10' : ''
             }`;
@@ -1681,15 +1798,15 @@
                 ? `<img src="${photoSrc}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">`
                 : `<div class="w-full h-full bg-slate-200 dark:bg-slate-900 flex items-center justify-center text-gold-500"><i data-lucide="award" class="w-6 h-6"></i></div>`
               }
-              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/40 group-hover:via-transparent transition-all"></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/40 group-hover:via-transparent transition-all pointer-events-none"></div>
 
-              <div class="absolute top-1.5 left-1.5 flex items-center gap-1">
+              <div class="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 flex items-center gap-1">
                 <span class="font-mono text-[10px] sm:text-xs font-black px-1.5 py-0.5 rounded bg-black/70 text-gold-400 border border-gold-500/50 backdrop-blur">
                   #${numStr}
                 </span>
               </div>
 
-              <div class="absolute bottom-1.5 left-1.5 right-1.5 truncate">
+              <div class="absolute bottom-1 left-1 right-1 sm:bottom-1.5 sm:left-1.5 sm:right-1.5 truncate">
                 <p class="text-[11px] sm:text-xs font-bold text-white truncate drop-shadow group-hover:text-gold-300 transition">
                   ${item.title || '無標題'}
                 </p>
@@ -1700,8 +1817,8 @@
         } else {
           // --- EMPTY / LOCKED STATE ---
           if (isCardMode) {
-            // Large Empty Card
-            card.className = `group relative rounded-2xl sm:rounded-3xl flex flex-col items-center justify-center p-4 border-2 border-dashed border-slate-300 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 hover:border-slate-400 dark:hover:border-slate-600 transition-all duration-200 ${
+            // Sleek Compact Strip for locked card in Card Feed (eliminates empty vertical whitespace!)
+            card.className = `group relative rounded-xl sm:rounded-2xl px-3.5 py-2.5 sm:px-4 sm:py-3 border border-dashed border-slate-300 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 hover:border-gold-500/50 transition-all duration-200 flex items-center justify-between ${
               isOwner ? 'cursor-pointer' : 'cursor-default'
             } ${isTargetHighlight ? 'animate-unlock z-10' : ''}`;
             
@@ -1714,16 +1831,18 @@
             };
 
             card.innerHTML = `
-              <div class="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-400 dark:text-slate-500 flex items-center justify-center mb-2 group-hover:text-gold-500 transition">
-                <span class="font-mono font-bold text-sm">#${numStr}</span>
+              <div class="flex items-center gap-2.5">
+                <span class="font-mono text-xs sm:text-sm font-bold text-slate-400 dark:text-slate-500 group-hover:text-gold-500 transition">#${numStr}</span>
+                <span class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">未解鎖挑戰</span>
               </div>
-              <p class="text-xs font-semibold text-slate-400 dark:text-slate-500">
-                ${isOwner ? '+ 點擊解鎖' : '未解鎖'}
-              </p>
+              <span class="text-xs sm:text-sm text-gold-600 dark:text-gold-400 font-bold group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span>${isOwner ? '點擊解鎖' : '未解鎖'}</span>
+              </span>
             `;
           } else {
             // Dense Matrix Empty Square
-            card.className = `group relative aspect-square rounded-xl sm:rounded-2xl flex flex-col items-center justify-center p-1 sm:p-2 border border-dashed border-slate-300 dark:border-slate-800/90 bg-white/40 dark:bg-slate-900/40 hover:border-slate-400 dark:hover:border-slate-600 transition-all duration-200 ${
+            card.className = `group relative aspect-square rounded-xl sm:rounded-2xl flex flex-col items-center justify-center p-1 border border-dashed border-slate-300 dark:border-slate-800/90 bg-white/40 dark:bg-slate-900/40 hover:border-gold-500/50 transition-all duration-200 ${
               isOwner ? 'cursor-pointer' : 'cursor-default'
             } ${isTargetHighlight ? 'animate-unlock z-10' : ''}`;
             
@@ -1736,7 +1855,7 @@
             };
 
             card.innerHTML = `
-              <span class="font-mono text-[11px] sm:text-xs font-bold text-slate-400 dark:text-slate-600 group-hover:text-gold-500 transition-colors">
+              <span class="font-mono text-xs sm:text-sm font-bold text-slate-400 dark:text-slate-500 group-hover:text-gold-500 transition-colors">
                 #${numStr}
               </span>
             `;
@@ -2235,7 +2354,7 @@
     // ==========================================
     function exportData() {
       const exportObject = {
-        app: "Wang's Life Questbook",
+        app: "100 Challenge",
         version: "2.1",
         exportDate: new Date().toISOString(),
         totalUnlocked: Object.values(questData).reduce((sum, cat) => sum + Object.keys(cat).length, 0),
@@ -2247,7 +2366,7 @@
       const downloadAnchor = document.createElement('a');
       const dateStr = new Date().toISOString().split('T')[0];
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `wang_life_questbook_backup_${dateStr}.json`);
+      downloadAnchor.setAttribute("download", `100_challenge_backup_${dateStr}.json`);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
