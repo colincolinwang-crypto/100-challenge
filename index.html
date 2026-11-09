@@ -343,7 +343,7 @@
   </div><!-- End Main Container -->
 
   <!-- FLOATING ACTION BUTTON (FAB) - ONLY SHOWN FOR OWNER -->
-  <aside id="fab-container" class="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-40">
+  <aside id="fab-container" class="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-40 hidden">
     <button onclick="openUnlockModal()" id="fab-unlock-btn" 
       class="group relative flex items-center gap-2 px-4 py-3 sm:px-5 sm:py-3.5 rounded-full bg-gradient-to-r from-gold-500 via-amber-500 to-emerald-500 text-slate-950 font-extrabold text-sm sm:text-base shadow-xl shadow-gold-500/25 hover:shadow-gold-500/40 hover:scale-105 active:scale-95 transition-all duration-200">
       <i data-lucide="plus" class="w-5 h-5 transition-transform duration-200 group-hover:rotate-90"></i>
@@ -999,6 +999,52 @@
       renderGrid();
       updateCategoryHeader();
       showToast(`🎉 歡迎！已成功綁定 Google 帳號 (${email})，管理員身分已生效`, "success");
+    }
+
+    function updateAuthUI() {
+      const authStatusText = document.getElementById('auth-status-text');
+      const authBtn = document.getElementById('auth-btn');
+      const fabContainer = document.getElementById('fab-container');
+      const detailOwnerActions = document.getElementById('detail-owner-actions');
+      const loggedInView = document.getElementById('auth-logged-in-view');
+      const loggedOutView = document.getElementById('auth-logged-out-view');
+      const userEmailDisplay = document.getElementById('auth-user-email-display');
+      const dishPlannerEntry = document.getElementById('dish-planner-entry');
+
+      if (isOwner) {
+        const username = currentUserEmail ? currentUserEmail.split('@')[0] : 'Colin';
+        if (authStatusText) authStatusText.textContent = `👑 管理員 (${username})`;
+        if (authBtn) authBtn.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition border shadow-sm bg-gold-500/10 text-gold-600 dark:text-gold-400 border-gold-500/40";
+        if (fabContainer) fabContainer.classList.remove('hidden');
+        if (detailOwnerActions) detailOwnerActions.classList.remove('hidden');
+        if (loggedInView) loggedInView.classList.remove('hidden');
+        if (loggedOutView) loggedOutView.classList.add('hidden');
+        if (userEmailDisplay) userEmailDisplay.textContent = currentUserEmail || 'Colin (站長)';
+        if (dishPlannerEntry && currentCategoryId === 'dishes') {
+          dishPlannerEntry.classList.remove('hidden');
+          updateDishPlannerStats();
+        }
+      } else {
+        if (authStatusText) authStatusText.textContent = '訪客模式 (登入)';
+        if (authBtn) authBtn.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition border shadow-sm bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-gold-500/60";
+        if (fabContainer) fabContainer.classList.add('hidden');
+        if (detailOwnerActions) detailOwnerActions.classList.add('hidden');
+        if (loggedInView) loggedInView.classList.add('hidden');
+        if (loggedOutView) loggedOutView.classList.remove('hidden');
+        if (dishPlannerEntry) dishPlannerEntry.classList.add('hidden');
+      }
+      safeCreateIcons();
+    }
+
+    function openAuthModal() {
+      document.getElementById('auth-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      safeCreateIcons();
+    }
+
+    function closeAuthModal() {
+      document.getElementById('auth-modal').classList.add('hidden');
+      document.body.style.overflow = '';
     }
 
     function loginWithGoogle() {
