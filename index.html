@@ -546,11 +546,11 @@
           <button type="button" onclick="appendTag('台灣百岳')" class="px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">+ 台灣百岳</button>
         </div>
 
-        <!-- Photo Upload / Camera Area -->
+        <!-- Photo Upload / Camera Area (最多 3 張) -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <label class="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
-              5. 上傳照片或直接拍照 Photo (自動壓縮優化)
+              5. 上傳照片或拍照 Photo (<span class="text-gold-500 font-bold">頂多 3 張</span>，自動壓縮)
             </label>
             <button type="button" onclick="toggleImageUrlInput()" class="text-xs text-gold-500 hover:underline">
               或改填圖片網址
@@ -558,32 +558,36 @@
           </div>
           
           <div class="relative">
-            <!-- Hidden file input -->
-            <input type="file" id="form-photo-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+            <!-- Hidden file input (支援 multiple 多選) -->
+            <input type="file" id="form-photo-input" accept="image/*" multiple class="hidden" onchange="handlePhotoUpload(event)">
             
-            <!-- Upload Box -->
-            <div id="photo-upload-dropzone" onclick="document.getElementById('form-photo-input').click()"
-              class="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-gold-500 rounded-2xl p-4 text-center cursor-pointer transition bg-slate-50 dark:bg-slate-900/60 group">
-              <div id="photo-placeholder" class="py-3 flex flex-col items-center justify-center">
+            <!-- Upload Box / Previews -->
+            <div id="photo-upload-dropzone" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-3 sm:p-4 transition bg-slate-50 dark:bg-slate-900/60">
+              
+              <!-- Empty State Placeholder (尚未選照片時點擊觸發選擇) -->
+              <div id="photo-placeholder" onclick="document.getElementById('form-photo-input').click()" class="py-3 flex flex-col items-center justify-center cursor-pointer group">
                 <div class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:text-gold-500 flex items-center justify-center transition mb-2 shadow-sm">
                   <i data-lucide="camera" class="w-6 h-6"></i>
                 </div>
                 <p class="text-sm font-semibold text-slate-800 dark:text-slate-200">
-                  <span class="text-gold-500">點此拍照或選擇相簿</span>
+                  <span class="text-gold-500">點此拍照或選擇相簿</span>（最多 3 張）
                 </p>
-                <p class="text-xs text-slate-400 mt-1">支援手機拍照直接上傳，智慧壓縮省流量</p>
+                <p class="text-xs text-slate-400 mt-1">支援一次選取多張，智慧自動壓縮節省流量</p>
               </div>
 
-              <!-- Image Preview Container -->
-              <div id="photo-preview-container" class="hidden relative">
-                <img id="photo-preview-img" src="" alt="預覽照片" class="w-full h-44 object-cover rounded-xl border border-slate-200 dark:border-slate-700 shadow-md">
-                <div class="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition rounded-xl flex items-center justify-center">
-                  <span class="px-3 py-1.5 rounded-lg bg-black/70 text-xs text-white backdrop-blur">點擊更換照片</span>
+              <!-- Multi-photo Previews Grid (已選擇 1~3 張時顯示) -->
+              <div id="photo-preview-container" class="hidden space-y-2">
+                <div id="photo-previews-grid" class="grid grid-cols-3 gap-2 sm:gap-3">
+                  <!-- Thumbnails injected by JS -->
                 </div>
-                <button type="button" onclick="event.stopPropagation(); removePhoto();" class="absolute top-2 right-2 p-1.5 rounded-full bg-red-500 text-white shadow-lg transition">
-                  <i data-lucide="trash-2" class="w-4 h-4"></i>
-                </button>
+                <div class="flex items-center justify-between pt-1 text-[11px] text-slate-400">
+                  <span id="photo-count-tip">已選取 0 / 3 張</span>
+                  <button type="button" onclick="clearAllPhotos()" class="text-red-500 hover:underline">
+                    清除全部照片
+                  </button>
+                </div>
               </div>
+
             </div>
 
             <!-- Optional Image URL Input -->
@@ -591,22 +595,22 @@
               <label class="block text-xs text-slate-500 font-medium">輸入外連圖片網址 (URL)：</label>
               <div class="flex gap-2">
                 <input type="url" id="custom-image-url-input" placeholder="https://..." class="flex-1 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-200 focus:outline-none focus:border-gold-500">
-                <button type="button" onclick="applyCustomImageUrl()" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs text-gold-600 dark:text-gold-400 font-bold transition">套用</button>
+                <button type="button" onclick="applyCustomImageUrl()" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs text-gold-600 dark:text-gold-400 font-bold transition">加入</button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 3-sentence Notes / Reflection -->
+        <!-- 3-sentence Notes / Reflection (選填) -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <label class="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
-              6. 三句內的心得隨筆 Reflection (100字內)
+              6. 三句內的心得隨筆 Reflection (<span class="text-slate-400 font-normal">選填</span>，100字內)
             </label>
             <span id="char-counter" class="text-xs font-mono text-slate-400">0 / 100</span>
           </div>
-          <textarea id="form-notes" rows="3" maxlength="100" required oninput="updateCharCount(this.value)"
-            placeholder="紀錄當下最真切的感受與溫度，三句內寫完..."
+          <textarea id="form-notes" rows="3" maxlength="100" oninput="updateCharCount(this.value)"
+            placeholder="紀錄當下最真切的感受與溫度，三句內寫完（選填）..."
             class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-base sm:text-sm text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-gold-500 resize-none leading-relaxed"></textarea>
         </div>
 
@@ -631,15 +635,15 @@
   <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
     <div class="bg-white dark:bg-brand-surface border border-slate-200 dark:border-slate-700/80 w-full max-w-lg rounded-t-3xl sm:rounded-3xl overflow-hidden shadow-2xl modal-enter relative my-auto max-h-[92vh] overflow-y-auto pb-safe">
       
-      <!-- Card Image Header -->
-      <div class="relative w-full h-64 sm:h-72 bg-slate-900 overflow-hidden">
-        <img id="detail-photo" src="" alt="照片" class="w-full h-full object-cover">
+      <!-- Card Image Header (支援多圖輪播切換) -->
+      <div class="relative w-full h-64 sm:h-72 bg-slate-900 overflow-hidden group">
+        <img id="detail-photo" src="" alt="照片" class="w-full h-full object-cover transition-all duration-300">
         
         <!-- Gradient Overlay -->
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/60 pointer-events-none"></div>
         
         <!-- Slot Number Badge -->
-        <div class="absolute top-4 left-4 flex items-center gap-2">
+        <div class="absolute top-4 left-4 flex items-center gap-2 z-10">
           <span id="detail-slot-num" class="font-mono text-sm font-extrabold px-3 py-1 rounded-full bg-black/70 text-gold-400 border border-gold-500/50 backdrop-blur shadow-lg">
             #001
           </span>
@@ -649,15 +653,36 @@
         </div>
 
         <!-- Close Button -->
-        <button onclick="closeDetailModal()" class="absolute top-4 right-4 p-2 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur transition">
+        <button onclick="closeDetailModal()" class="absolute top-4 right-4 p-2 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur transition z-10">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
 
+        <!-- Multi-photo Navigation Arrows (Only shown when > 1 photo) -->
+        <button id="detail-prev-photo-btn" type="button" onclick="changeDetailPhoto(-1)"
+          class="hidden absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur z-20 transition shadow-lg active:scale-90">
+          <i data-lucide="chevron-left" class="w-5 h-5"></i>
+        </button>
+        <button id="detail-next-photo-btn" type="button" onclick="changeDetailPhoto(1)"
+          class="hidden absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur z-20 transition shadow-lg active:scale-90">
+          <i data-lucide="chevron-right" class="w-5 h-5"></i>
+        </button>
+
+        <!-- Photo Counter Badge (e.g. 1 / 3) -->
+        <div id="detail-photo-counter-badge" class="hidden absolute bottom-3 left-4 flex items-center gap-1.5 text-xs text-white font-mono bg-black/70 backdrop-blur px-2.5 py-1 rounded-lg border border-slate-700/60 z-10">
+          <i data-lucide="image" class="w-3.5 h-3.5 text-gold-400"></i>
+          <span id="detail-photo-counter-text">1 / 3</span>
+        </div>
+
         <!-- Unlock Date Floating Badge -->
-        <div class="absolute bottom-3 right-4 flex items-center gap-1.5 text-xs text-slate-200 font-mono bg-black/60 backdrop-blur px-3 py-1 rounded-lg border border-slate-700/60">
+        <div class="absolute bottom-3 right-4 flex items-center gap-1.5 text-xs text-slate-200 font-mono bg-black/60 backdrop-blur px-3 py-1 rounded-lg border border-slate-700/60 z-10">
           <i data-lucide="calendar" class="w-3.5 h-3.5 text-gold-400"></i>
           <span id="detail-date">2026-10-26</span>
         </div>
+      </div>
+
+      <!-- Thumbnail Dots Bar (Only shown when > 1 photo) -->
+      <div id="detail-thumbnails-bar" class="hidden px-5 py-2.5 bg-slate-100 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 flex items-center justify-center gap-2">
+        <!-- Dots injected by JS -->
       </div>
 
       <!-- Card Body Content -->
@@ -868,7 +893,10 @@
     let currentTagFilter = 'all';
     let currentSearchTerm = '';
     let currentDetailCard = null; // { categoryId, number }
-    let uploadedImageBase64 = null;
+    let uploadedImages = []; // 支援最多 3 張照片 (Base64 或 URL)
+    let uploadedImageBase64 = null; // 封面 (向下相容)
+    let currentDetailPhotos = []; // 卡片詳情的所有照片陣列
+    let currentDetailPhotoIndex = 0; // 卡片詳情目前瀏覽的照片索引
     let supabaseClient = null;
     
     // Auth & Permission State (Google OAuth Only - No Passcode)
@@ -1483,12 +1511,17 @@
             if (!questData[item.category_id]) {
               questData[item.category_id] = {};
             }
+            const cloudPhotos = (item.metadata && Array.isArray(item.metadata.photos)) 
+              ? item.metadata.photos 
+              : (item.photo_url ? [item.photo_url] : []);
+
             questData[item.category_id][item.slot_number] = {
               title: item.title,
               date: item.unlocked_date,
               tags: item.tags || [],
               notes: item.notes || '',
               photo: item.photo_url || '',
+              photos: cloudPhotos,
               updatedAt: item.updated_at
             };
           });
@@ -1911,7 +1944,7 @@
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('form-date').value = today;
 
-      removePhoto();
+      clearAllPhotos();
 
       modal.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
@@ -1922,7 +1955,7 @@
       const modal = document.getElementById('unlock-modal');
       modal.classList.add('hidden');
       document.body.style.overflow = '';
-      uploadedImageBase64 = null;
+      clearAllPhotos();
     }
 
     function onFormCategoryChange(catId, presetNum = null) {
@@ -1982,15 +2015,18 @@
 
     function applyCustomImageUrl() {
       const input = document.getElementById('custom-image-url-input');
-      const url = input.value.trim();
+      const url = input ? input.value.trim() : '';
       if (!url) return;
-      uploadedImageBase64 = url;
-      const previewImg = document.getElementById('photo-preview-img');
-      previewImg.src = url;
-      document.getElementById('photo-placeholder').classList.add('hidden');
-      document.getElementById('photo-preview-container').classList.remove('hidden');
+      if (uploadedImages.length >= 3) {
+        showToast("最多只能上傳 3 張照片！請先移除其他照片", "warning");
+        return;
+      }
+      uploadedImages.push(url);
+      uploadedImageBase64 = uploadedImages[0] || null;
+      input.value = '';
+      renderPhotoPreviews();
       safeCreateIcons();
-      showToast("圖片網址已成功套用！", "info");
+      showToast("圖片網址已成功加入！", "info");
     }
 
     function appendTag(tagName) {
@@ -2008,20 +2044,33 @@
     }
 
     // ==========================================
-    // 11. SMART PHOTO COMPRESSION
+    // 11. SMART PHOTO COMPRESSION & MULTI-PHOTO (頂多 3 張)
     // ==========================================
     function handlePhotoUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+      const files = Array.from(event.target.files || []);
+      if (!files.length) return;
 
-      compressImage(file, 900, 900, 0.75).then(base64Data => {
-        uploadedImageBase64 = base64Data;
-        
-        const previewImg = document.getElementById('photo-preview-img');
-        previewImg.src = base64Data;
-        document.getElementById('photo-placeholder').classList.add('hidden');
-        document.getElementById('photo-preview-container').classList.remove('hidden');
-        safeCreateIcons();
+      if (uploadedImages.length >= 3) {
+        showToast("最多只能上傳 3 張照片！若要更換請先移除現有照片", "warning");
+        event.target.value = '';
+        return;
+      }
+
+      const remaining = 3 - uploadedImages.length;
+      const filesToProcess = files.slice(0, remaining);
+      if (files.length > remaining) {
+        showToast(`已為您自動選取前 ${remaining} 張照片（上限 3 張）`, "info");
+      }
+
+      showToast("⏳ 正在進行智慧圖片壓縮優化...", "info");
+
+      const promises = filesToProcess.map(file => compressImage(file, 900, 900, 0.75));
+      Promise.all(promises).then(base64List => {
+        uploadedImages = uploadedImages.concat(base64List);
+        uploadedImageBase64 = uploadedImages[0] || null;
+        renderPhotoPreviews();
+        event.target.value = '';
+        showToast(`✅ 已成功加入 ${base64List.length} 張照片 (目前共 ${uploadedImages.length}/3 張)`, "success");
       }).catch(err => {
         console.error("圖片壓縮失敗", err);
         showToast("圖片載入失敗，請換一張照片重試！", "error");
@@ -2065,16 +2114,81 @@
       });
     }
 
-    function removePhoto() {
+    function renderPhotoPreviews() {
+      const placeholder = document.getElementById('photo-placeholder');
+      const container = document.getElementById('photo-preview-container');
+      const grid = document.getElementById('photo-previews-grid');
+      const countTip = document.getElementById('photo-count-tip');
+
+      uploadedImageBase64 = uploadedImages[0] || null;
+
+      if (!uploadedImages || uploadedImages.length === 0) {
+        if (placeholder) placeholder.classList.remove('hidden');
+        if (container) container.classList.add('hidden');
+        return;
+      }
+
+      if (placeholder) placeholder.classList.add('hidden');
+      if (container) container.classList.remove('hidden');
+
+      if (countTip) {
+        countTip.textContent = `已選取 ${uploadedImages.length} / 3 張 (第 1 張為封面)`;
+      }
+
+      if (grid) {
+        grid.innerHTML = '';
+        uploadedImages.forEach((src, idx) => {
+          const thumb = document.createElement('div');
+          thumb.className = "relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 aspect-square bg-slate-900 group shadow-sm";
+          thumb.innerHTML = `
+            <img src="${src}" class="w-full h-full object-cover">
+            ${idx === 0 ? '<span class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded text-[10px] bg-gold-500 text-slate-950 font-black shadow z-10">封面</span>' : ''}
+            <button type="button" onclick="event.stopPropagation(); removeSinglePhoto(${idx});" 
+              class="absolute top-1 right-1 p-1 rounded-full bg-red-500/90 hover:bg-red-600 text-white shadow transition z-10" title="移除此照片">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          `;
+          grid.appendChild(thumb);
+        });
+
+        // 若少於 3 張，補上「+ 加照片」按鈕
+        if (uploadedImages.length < 3) {
+          const addBtn = document.createElement('button');
+          addBtn.type = 'button';
+          addBtn.onclick = () => document.getElementById('form-photo-input').click();
+          addBtn.className = "border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-gold-500 rounded-xl flex flex-col items-center justify-center text-slate-400 hover:text-gold-500 transition aspect-square bg-slate-100/50 dark:bg-slate-800/40 cursor-pointer";
+          addBtn.innerHTML = `
+            <i data-lucide="plus" class="w-5 h-5 mb-0.5"></i>
+            <span class="text-[11px] font-bold">加照片</span>
+            <span class="text-[9px] text-slate-400">還可 ${3 - uploadedImages.length} 張</span>
+          `;
+          grid.appendChild(addBtn);
+        }
+      }
+      safeCreateIcons();
+    }
+
+    function removeSinglePhoto(index) {
+      if (index >= 0 && index < uploadedImages.length) {
+        uploadedImages.splice(index, 1);
+        renderPhotoPreviews();
+      }
+    }
+
+    function clearAllPhotos() {
+      uploadedImages = [];
       uploadedImageBase64 = null;
-      document.getElementById('form-photo-input').value = '';
-      document.getElementById('photo-preview-img').src = '';
-      document.getElementById('photo-placeholder').classList.remove('hidden');
-      document.getElementById('photo-preview-container').classList.add('hidden');
+      const fileInput = document.getElementById('form-photo-input');
+      if (fileInput) fileInput.value = '';
+      renderPhotoPreviews();
+    }
+
+    function removePhoto() {
+      clearAllPhotos();
     }
 
     // ==========================================
-    // 12. FORM SUBMIT & UNLOCK CELEBRATION
+    // 12. FORM SUBMIT & UNLOCK CELEBRATION (心得非必填 + 多圖儲存)
     // ==========================================
     function handleFormSubmit(event) {
       event.preventDefault();
@@ -2089,7 +2203,7 @@
       const title = document.getElementById('form-title').value.trim();
       const date = document.getElementById('form-date').value;
       const rawTags = document.getElementById('form-tags').value.trim();
-      const notes = document.getElementById('form-notes').value.trim();
+      const notes = document.getElementById('form-notes').value.trim(); // 選填，可為空
 
       if (isNaN(number) || number < 1 || number > 100) {
         showToast("編號必須在 1 到 100 之間！", "warning");
@@ -2102,15 +2216,17 @@
         questData[categoryId] = {};
       }
 
-      const finalPhoto = uploadedImageBase64 || (questData[categoryId][number] ? questData[categoryId][number].photo : '') || '';
+      const photos = [...uploadedImages];
+      const finalCover = photos[0] || (questData[categoryId][number] ? questData[categoryId][number].photo : '') || '';
 
-      // Save local cache
+      // Save local cache (含多圖陣列與向下相容的單一 photo)
       questData[categoryId][number] = {
         title,
         date,
         tags,
-        notes,
-        photo: finalPhoto,
+        notes, // 非必填
+        photo: finalCover,
+        photos: photos.length > 0 ? photos : (finalCover ? [finalCover] : []),
         updatedAt: new Date().toISOString()
       };
 
@@ -2135,7 +2251,8 @@
           unlocked_date: date,
           tags: tags,
           notes: notes,
-          photo_url: finalPhoto,
+          photo_url: finalCover,
+          metadata: { photos: photos.length > 0 ? photos : (finalCover ? [finalCover] : []) },
           updated_at: new Date().toISOString()
         }, { onConflict: 'category_id,slot_number' }).then(({ error }) => {
           if (error) {
@@ -2196,15 +2313,23 @@
       document.getElementById('detail-category-badge').textContent = `${cat ? cat.icon : ''} ${cat ? cat.title : ''}`;
       document.getElementById('detail-title').textContent = item.title || '無標題';
       document.getElementById('detail-date').textContent = item.date || '未記錄日期';
-      document.getElementById('detail-notes').textContent = item.notes || '尚無隨筆記錄。';
 
-      const photoEl = document.getElementById('detail-photo');
-      if (item.photo) {
-        photoEl.src = item.photo;
-        photoEl.classList.remove('hidden');
+      // 心得隨筆 (選填)：若為空則優雅顯示未填寫
+      const notesEl = document.getElementById('detail-notes');
+      if (item.notes && item.notes.trim()) {
+        notesEl.textContent = item.notes;
+        notesEl.className = "pl-4 italic text-slate-800 dark:text-slate-200 text-sm sm:text-base leading-relaxed";
       } else {
-        photoEl.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400"><rect width="600" height="400" fill="%231E293B"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23F59E0B" font-family="sans-serif" font-size="20">Wang\'s Questbook Unlocked</text></svg>';
+        notesEl.innerHTML = '<span class="text-slate-400 dark:text-slate-500 not-italic text-xs sm:text-sm">（站長未填寫隨筆心得）</span>';
+        notesEl.className = "pl-4";
       }
+
+      // 載入多圖輪播 (支援最多 3 張)
+      currentDetailPhotos = item.photos && item.photos.length > 0 
+        ? [...item.photos] 
+        : (item.photo ? [item.photo] : []);
+      currentDetailPhotoIndex = 0;
+      renderDetailPhoto();
 
       const tagsContainer = document.getElementById('detail-tags-container');
       tagsContainer.innerHTML = '';
@@ -2229,6 +2354,65 @@
       modal.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
       safeCreateIcons();
+    }
+
+    function renderDetailPhoto() {
+      const photoEl = document.getElementById('detail-photo');
+      const prevBtn = document.getElementById('detail-prev-photo-btn');
+      const nextBtn = document.getElementById('detail-next-photo-btn');
+      const counterBadge = document.getElementById('detail-photo-counter-badge');
+      const counterText = document.getElementById('detail-photo-counter-text');
+      const thumbnailsBar = document.getElementById('detail-thumbnails-bar');
+
+      if (!currentDetailPhotos || currentDetailPhotos.length === 0) {
+        photoEl.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400"><rect width="600" height="400" fill="%231E293B"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23F59E0B" font-family="sans-serif" font-size="20">100 Challenge Unlocked</text></svg>';
+        if (prevBtn) prevBtn.classList.add('hidden');
+        if (nextBtn) nextBtn.classList.add('hidden');
+        if (counterBadge) counterBadge.classList.add('hidden');
+        if (thumbnailsBar) thumbnailsBar.classList.add('hidden');
+        return;
+      }
+
+      // 設定當前大圖
+      photoEl.src = currentDetailPhotos[currentDetailPhotoIndex];
+
+      // 若有多張照片 (> 1)，顯示切換箭頭、計數徽章與縮圖列
+      if (currentDetailPhotos.length > 1) {
+        if (prevBtn) prevBtn.classList.remove('hidden');
+        if (nextBtn) nextBtn.classList.remove('hidden');
+        if (counterBadge) {
+          counterBadge.classList.remove('hidden');
+          if (counterText) counterText.textContent = `${currentDetailPhotoIndex + 1} / ${currentDetailPhotos.length}`;
+        }
+        if (thumbnailsBar) {
+          thumbnailsBar.classList.remove('hidden');
+          thumbnailsBar.innerHTML = '';
+          currentDetailPhotos.forEach((src, idx) => {
+            const thumbBtn = document.createElement('button');
+            thumbBtn.type = 'button';
+            thumbBtn.onclick = () => { currentDetailPhotoIndex = idx; renderDetailPhoto(); };
+            thumbBtn.className = `w-8 h-8 rounded-lg overflow-hidden border-2 transition ${
+              idx === currentDetailPhotoIndex 
+                ? 'border-gold-500 scale-105 shadow-md shadow-gold-500/20' 
+                : 'border-slate-300 dark:border-slate-700 opacity-60 hover:opacity-100'
+            }`;
+            thumbBtn.innerHTML = `<img src="${src}" class="w-full h-full object-cover">`;
+            thumbnailsBar.appendChild(thumbBtn);
+          });
+        }
+      } else {
+        if (prevBtn) prevBtn.classList.add('hidden');
+        if (nextBtn) nextBtn.classList.add('hidden');
+        if (counterBadge) counterBadge.classList.add('hidden');
+        if (thumbnailsBar) thumbnailsBar.classList.add('hidden');
+      }
+      safeCreateIcons();
+    }
+
+    function changeDetailPhoto(delta) {
+      if (!currentDetailPhotos || currentDetailPhotos.length <= 1) return;
+      currentDetailPhotoIndex = (currentDetailPhotoIndex + delta + currentDetailPhotos.length) % currentDetailPhotos.length;
+      renderDetailPhoto();
     }
 
     function closeDetailModal() {
@@ -2260,12 +2444,11 @@
       document.getElementById('form-notes').value = item.notes || '';
       updateCharCount(item.notes || '');
 
-      if (item.photo) {
-        uploadedImageBase64 = item.photo;
-        document.getElementById('photo-preview-img').src = item.photo;
-        document.getElementById('photo-placeholder').classList.add('hidden');
-        document.getElementById('photo-preview-container').classList.remove('hidden');
-      }
+      // 載入原有照片 (最多 3 張)
+      uploadedImages = item.photos && item.photos.length > 0 
+        ? [...item.photos] 
+        : (item.photo ? [item.photo] : []);
+      renderPhotoPreviews();
     }
 
     function deleteCurrentCard() {
