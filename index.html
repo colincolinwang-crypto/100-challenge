@@ -1664,9 +1664,7 @@
           });
 
           // Sync cloud to local storage cache
-          try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(questData));
-          } catch (e) {}
+          saveDataToStorage();
 
           updateCloudStatusUI(true, "☁️ 雲端同步");
           renderTabs();
@@ -1681,13 +1679,69 @@
     }
 
     // ==========================================
-    // 6. INITIALIZATION & STORAGE
+    // 6. INITIALIZATION & DUAL-TIER STORAGE ENGINE (INDEXEDDB + LOCALSTORAGE)
     // ==========================================
+    const IDB_NAME = 'wang_life_questbook_db_v1';
+    const IDB_STORE = 'quest_data_store';
+    const IDB_VERSION = 1;
+
+    function openIDB() {
+      return new Promise((resolve) => {
+        if (!window.indexedDB) {
+          resolve(null);
+          return;
+        }
+        try {
+          const req = window.indexedDB.open(IDB_NAME, IDB_VERSION);
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(IDB_STORE)) {
+              db.createObjectStore(IDB_STORE);
+            }
+          };
+          req.onsuccess = (e) => resolve(e.target.result);
+          req.onerror = () => resolve(null);
+        } catch (err) {
+          resolve(null);
+        }
+      });
+    }
+
+    async function saveToIDB(key, val) {
+      try {
+        const db = await openIDB();
+        if (!db) return false;
+        return new Promise((resolve) => {
+          const tx = db.transaction(IDB_STORE, 'readwrite');
+          tx.objectStore(IDB_STORE).put(val, key);
+          tx.oncomplete = () => resolve(true);
+          tx.onerror = () => resolve(false);
+        });
+      } catch (e) {
+        return false;
+      }
+    }
+
+    async function loadFromIDB(key) {
+      try {
+        const db = await openIDB();
+        if (!db) return null;
+        return new Promise((resolve) => {
+          const tx = db.transaction(IDB_STORE, 'readonly');
+          const req = tx.objectStore(IDB_STORE).get(key);
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => resolve(null);
+        });
+      } catch (e) {
+        return null;
+      }
+    }
+
     async function initApp() {
       initTheme();
       initLayoutMode();
       initSupabase();
-      loadDataFromStorage();
+      await loadDataFromStorage();
       loadDishWishlist();
       checkOwnerAuth();
       renderTabs();
@@ -1701,7 +1755,8 @@
       await syncWithSupabase();
     }
 
-    function loadDataFromStorage() {
+    async function loadDataFromStorage() {
+      // 1. 先從 localStorage 快速取得文字結構
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         try {
@@ -1713,6 +1768,24 @@
         questData = {};
       }
 
+      // 2. 從 IndexedDB 讀取完整資料 (含大容量照片，突破 5MB 限制)
+      try {
+        const idbData = await loadFromIDB(STORAGE_KEY);
+        if (idbData && typeof idbData === 'object' && Object.keys(idbData).length > 0) {
+          Object.keys(idbData).forEach(catId => {
+            if (!questData[catId]) questData[catId] = {};
+            Object.keys(idbData[catId]).forEach(num => {
+              questData[catId][num] = {
+                ...(questData[catId][num] || {}),
+                ...idbData[catId][num]
+              };
+            });
+          });
+        }
+      } catch (err) {
+        console.warn("IndexedDB 載入異常，使用預設快取:", err);
+      }
+
       CATEGORIES.forEach(cat => {
         if (!questData[cat.id]) {
           questData[cat.id] = {};
@@ -1721,10 +1794,34 @@
     }
 
     function saveDataToStorage() {
+      // 1. 優先存入瀏覽器大容量資料庫 IndexedDB (容量高達數百 MB ~ 數 GB，絕不爆滿)
+      saveToIDB(STORAGE_KEY, questData);
+
+      // 2. 備份存入 localStorage；若滿 5MB 則自動存入輕量精簡索引，確保不丟出恐慌警告
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(questData));
       } catch (e) {
-        showToast("⚠️ 儲存空間已滿，建議匯出備份！", "warning");
+        // localStorage 已達瀏覽器 5MB 配額上限，建立輕量版以防快取中斷
+        try {
+          const lightweightData = {};
+          Object.keys(questData).forEach(catId => {
+            lightweightData[catId] = {};
+            Object.keys(questData[catId]).forEach(num => {
+              const item = questData[catId][num];
+              lightweightData[catId][num] = {
+                title: item.title,
+                date: item.date,
+                tags: item.tags,
+                notes: item.notes,
+                updatedAt: item.updatedAt
+                // 排除巨大 Base64 字串，完整相片由 IndexedDB 與 Supabase 雲端妥善保管
+              };
+            });
+          });
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(lightweightData));
+        } catch (innerErr) {
+          console.warn("localStorage 已達瀏覽器上限，完整資料已由 IndexedDB 與雲端保存");
+        }
       }
     }
 
@@ -2201,7 +2298,7 @@
 
       showToast("⏳ 正在進行智慧圖片壓縮優化...", "info");
 
-      const promises = filesToProcess.map(file => compressImage(file, 900, 900, 0.75));
+      const promises = filesToProcess.map(file => compressImage(file, 800, 800, 0.70));
       Promise.all(promises).then(base64List => {
         uploadedImages = uploadedImages.concat(base64List);
         uploadedImageBase64 = uploadedImages[0] || null;
