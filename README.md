@@ -32,10 +32,9 @@
 - **三句隨筆**：提供 100 字即時字數統計，專注於淬鍊最真切的心境溫度。
 
 ### 5. 資料保存與移轉（Data Persistence & Backup）
-- **本機永久儲存**：使用瀏覽器 `localStorage`，重新整理或離線皆不遺失。
-- **匯出 JSON 備份**：一鍵下載完整 `wang_life_questbook_backup_YYYY-MM-DD.json`。
+- **本機永久儲存**：使用瀏覽器 `IndexedDB` 與 `localStorage`，重新整理或離線皆不遺失。
+- **匯出 JSON 備份**：一鍵下載完整 `100_challenge_backup_YYYY-MM-DD.json`。
 - **匯入 JSON 備份**：支援智慧合併或復原已備份的回憶資料庫。
-- **精選示範資料**：頂部選單提供 ✨ 載入 6 筆精選示範回憶，隨時體驗完整點亮效果。
 
 ---
 

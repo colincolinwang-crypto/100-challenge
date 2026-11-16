@@ -211,9 +211,6 @@
             <button id="btn-export-json" onclick="exportData()" title="匯出資料備份 (JSON)" class="p-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 transition shadow-sm">
               <i data-lucide="download" class="w-3.5 h-3.5"></i>
             </button>
-            <button id="btn-sample-data" onclick="loadSampleData()" title="載入精選示範資料" class="p-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-medium text-gold-500 transition shadow-sm">
-              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-            </button>
           </div>
 
         </div>
@@ -2746,99 +2743,6 @@
       downloadAnchor.remove();
 
       showToast("💾 備份檔案匯出成功！請妥善保存回憶。", "success");
-    }
-
-    function loadSampleData() {
-      if (!isOwner) {
-        showToast("請先登入擁有者身分後再載入示範資料！", "warning");
-        openAuthModal();
-        return;
-      }
-      if (confirm("是否載入 6 條精選的示範人生清單卡片？這能讓你立刻體驗完整介面與視覺效果。")) {
-        const samples = {
-          soccer: {
-            1: {
-              title: "大安森林公園父子夜戰",
-              date: "2026-04-12",
-              tags: ["足球", "傳接球", "夜戰"],
-              notes: "帶兒子在草地上練了一整晚傳接球與內腳背射門。滿身大汗時並肩喝著冰紅茶，看著他燦爛的笑容，所有的疲憊都煙消雲散。",
-              photo: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80"
-            }
-          },
-          meals: {
-            1: {
-              title: "老胡牛肉麵的老位子",
-              date: "2026-05-01",
-              tags: ["家常菜", "巷弄老店", "父親私房"],
-              notes: "三十年前爸爸牽著我的手來吃，今天我開車載爸爸來。他依然點了大碗半筋半肉，話不多，但眼神滿是安心與笑意。",
-              photo: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80"
-            }
-          },
-          dishes: {
-            1: {
-              title: "炙燒明太子山藥",
-              date: "2026-06-20",
-              tags: ["炙燒", "居酒屋", "下酒小點"],
-              notes: "切厚片山藥煎至微焦，厚塗明太子美乃滋噴槍炙燒。配上冰鎮生啤酒，焦香與清爽在舌尖爆開，週末最棒的犒賞！",
-              photo: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80"
-            }
-          },
-          ai: {
-            1: {
-              title: "個人化晨間語音新聞 Agent",
-              date: "2026-07-15",
-              tags: ["Agent", "自動化", "工作流"],
-              notes: "串接 Gemini 與 Edge-TTS，清晨自動抓取國際科技頭條並合成專屬播報。用自己寫的工具開啟一天，成就感無可比擬。",
-              photo: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80"
-            }
-          },
-          sketches: {
-            1: {
-              title: "赤峰街午後轉角咖啡館",
-              date: "2026-08-08",
-              tags: ["街頭速寫", "咖啡館", "鋼筆淡彩"],
-              notes: "點了杯冰美式，用鋼筆花了二十分鐘勾勒出老街紅磚與午後斜陽。放慢節奏，才發現平凡的生活角落藏著如此豐沛的詩意。",
-              photo: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80"
-            }
-          },
-          trails: {
-            1: {
-              title: "玉山主峰單攻圓夢",
-              date: "2026-09-02",
-              tags: ["玉山", "台灣百岳", "遠征探索"],
-              notes: "凌晨兩點碎石坡的強風幾乎吹倒人。但在頂峰迎來金黃朝陽的那一刻，俯瞰群山雲海，眼眶不禁泛紅，深深敬畏這片壯麗大地！",
-              photo: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80"
-            }
-          }
-        };
-
-        // Merge into questData
-        Object.keys(samples).forEach(catId => {
-          if (!questData[catId]) questData[catId] = {};
-          questData[catId][1] = samples[catId][1];
-
-          // Sync to Supabase
-          if (supabaseClient) {
-            supabaseClient.from('quest_logs').upsert({
-              category_id: catId,
-              slot_number: 1,
-              title: samples[catId][1].title,
-              unlocked_date: samples[catId][1].date,
-              tags: samples[catId][1].tags,
-              notes: samples[catId][1].notes,
-              photo_url: samples[catId][1].photo,
-              updated_at: new Date().toISOString()
-            }, { onConflict: 'category_id,slot_number' }).then(() => {});
-          }
-        });
-
-        saveDataToStorage();
-        renderTabs();
-        updateCategoryHeader();
-        updateGlobalCounters();
-        renderGrid();
-        showToast("✨ 精選示範回憶已載入！點擊卡片可查看詳細隨筆。", "success");
-      }
     }
 
     // ==========================================
